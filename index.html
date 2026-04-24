@@ -532,7 +532,22 @@ function parseCSV(text) {
 
 function num(val) {
   if (!val || val === '') return 0;
-  const cleaned = val.replace(/[^0-9.-]/g, '');
+  // Google Sheets PT-BR: dot = thousands separator, comma = decimal
+  // Remove dots (thousands), replace comma with dot (decimal), then parse
+  let cleaned = val.replace(/[^0-9.,-]/g, '');
+  // If has both dot and comma, dot is thousands and comma is decimal
+  if (cleaned.includes(',') && cleaned.includes('.')) {
+    cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+  } else if (cleaned.includes(',')) {
+    // Only comma: could be decimal
+    cleaned = cleaned.replace(',', '.');
+  } else {
+    // Only dots: if pattern like 75.000 or 8.260, it's thousands separator
+    // Check if dot is followed by exactly 3 digits at end
+    if (/\.\d{3}$/.test(cleaned) && !/\.\d{1,2}$/.test(cleaned.replace(/\.\d{3}/g, ''))) {
+      cleaned = cleaned.replace(/\./g, '');
+    }
+  }
   return parseFloat(cleaned) || 0;
 }
 
