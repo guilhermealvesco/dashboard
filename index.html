@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RESOLVE — Dashboard Closers</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a28;
+    --border: #2a2a3a;
+    --text: #e8e8f0;
+    --text-dim: #7a7a90;
+    --blue: #3b82f6;
+    --blue-glow: rgba(59, 130, 246, 0.3);
+    --red: #ef4444;
+    --red-glow: rgba(239, 68, 68, 0.15);
+    --green: #22c55e;
+    --green-glow: rgba(34, 197, 94, 0.3);
+    --amber: #f59e0b;
+    --purple: #a855f7;
+    --cyan: #06b6d4;
+    --orange: #f97316;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--blue), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-divider {
+    width: 2px;
+    height: 30px;
+    background: var(--border);
+  }
+
+  .header-subtitle {
+    font-size: 14px;
+    color: var(--text-dim);
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .header-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .header-badge span {
+    color: var(--blue);
+    font-weight: 700;
+  }
+
+  .pulse-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green-glow);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  /* ===== KPI CARDS ===== */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 20px 40px;
+  }
+
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .kpi-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+  }
+
+  .kpi-card.vin-meta::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
+  .kpi-card.vin-real::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+  .kpi-card.wes-meta::before { background: linear-gradient(90deg, var(--purple), var(--blue)); }
+  .kpi-card.wes-real::before { background: linear-gradient(90deg, var(--amber), var(--orange)); }
+
+  .kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .kpi-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .kpi-value.blue { color: var(--blue); }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.purple { color: var(--purple); }
+  .kpi-value.amber { color: var(--amber); }
+
+  .kpi-sub {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .kpi-sub .pct-up { color: var(--green); }
+  .kpi-sub .pct-down { color: var(--red); }
+
+  /* ===== CHARTS GRID ===== */
+  .charts-main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 16px;
+    padding: 0 40px 20px;
+    height: calc(100vh - 240px);
+    min-height: 500px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chart-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .chart-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .chart-title .name { color: var(--text); }
+  .chart-title .type { color: var(--text-dim); font-weight: 400; margin-left: 8px; }
+
+  .chart-legend {
+    display: flex;
+    gap: 16px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .legend-dot.real { background: var(--blue); box-shadow: 0 0 6px var(--blue-glow); }
+  .legend-dot.meta { background: var(--red); }
+
+  .chart-body {
+    flex: 1;
+    position: relative;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* ===== DETAILED SECTION ===== */
+  .section-divider {
+    padding: 30px 40px 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-divider h2 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .section-divider .line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 16px 40px 40px;
+  }
+
+  .detail-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .detail-card .chart-title {
+    margin-bottom: 12px;
+    font-size: 13px;
+  }
+
+  .detail-chart-body {
+    height: 200px;
+    position: relative;
+  }
+
+  /* ===== FONTE TABLE ===== */
+  .fonte-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+
+  .fonte-table th {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .fonte-table td {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+
+  .fonte-table .bar-cell {
+    width: 50%;
+  }
+
+  .bar-bg {
+    background: var(--surface2);
+    border-radius: 4px;
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  .bar-label {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     RESOLVE — DASHBOARD DE PERFORMANCE DOS CLOSERS
+
+     COMO EDITAR OS DADOS:
+     Vá até a seção <script> no final do arquivo.
+     Procure por "DADOS — EDITE AQUI" e altere os números.
+     Salve o arquivo e faça push pro GitHub.
+     ============================================================ -->
+
+<div class="header">
+  <div class="header-left">
+    <div class="logo">RESOLVE</div>
+    <div class="header-divider"></div>
+    <div class="header-subtitle">Performance Closers</div>
+  </div>
+  <div class="header-right">
+    <div class="header-badge">Mês: <span id="mes-label">Abril/2026</span></div>
+    <div class="header-badge">Dias úteis restantes: <span id="dias-label">6</span></div>
+    <div class="header-badge">Atualizado: <span id="updated-label"></span></div>
+    <div class="pulse-dot"></div>
+  </div>
+</div>
+
+<div class="kpi-strip">
+  <div class="kpi-card vin-meta">
+    <div class="kpi-label">Meta Vinícius</div>
+    <div class="kpi-value blue" id="kpi-vin-meta">R$ 75.000</div>
+  </div>
+  <div class="kpi-card vin-real">
+    <div class="kpi-label">Realizado Vinícius</div>
+    <div class="kpi-value green" id="kpi-vin-real">R$ 0</div>
+    <div class="kpi-sub" id="kpi-vin-pct"></div>
+  </div>
+  <div class="kpi-card wes-meta">
+    <div class="kpi-label">Meta Wesley</div>
+    <div class="kpi-value purple" id="kpi-wes-meta">R$ 50.000</div>
+  </div>
+  <div class="kpi-card wes-real">
+    <div class="kpi-label">Realizado Wesley</div>
+    <div class="kpi-value amber" id="kpi-wes-real">R$ 0</div>
+    <div class="kpi-sub" id="kpi-wes-pct"></div>
+  </div>
+</div>
+
+<div class="charts-main">
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title"><span class="name">Vinícius</span><span class="type">· Receita Acumulada</span></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
+        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
+      </div>
+    </div>
+    <div class="chart-body"><canvas id="chart-vin-rev"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title"><span class="name">Wesley</span><span class="type">· Receita Acumulada</span></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
+        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
+      </div>
+    </div>
+    <div class="chart-body"><canvas id="chart-wes-rev"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title"><span class="name">Vinícius</span><span class="type">· Reuniões Acumuladas</span></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
+        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
+      </div>
+    </div>
+    <div class="chart-body"><canvas id="chart-vin-reu"></canvas></div>
+  </div>
+  <div class="chart-card">
+    <div class="chart-header">
+      <div class="chart-title"><span class="name">Wesley</span><span class="type">· Reuniões Acumuladas</span></div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
+        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
+      </div>
+    </div>
+    <div class="chart-body"><canvas id="chart-wes-reu"></canvas></div>
+  </div>
+</div>
+
+<!-- DESTRINCHADOS -->
+<div class="section-divider">
+  <h2>Vinícius — Detalhado</h2>
+  <div class="line"></div>
+</div>
+
+<div class="detail-grid">
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Reuniões por Fonte</span></div>
+    <div id="vin-fonte-table"></div>
+  </div>
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Receita Diária</span></div>
+    <div class="detail-chart-body"><canvas id="chart-vin-rev-daily"></canvas></div>
+  </div>
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Pipeline</span></div>
+    <div id="vin-pipeline"></div>
+  </div>
+</div>
+
+<div class="section-divider">
+  <h2>Wesley — Detalhado</h2>
+  <div class="line"></div>
+</div>
+
+<div class="detail-grid">
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Reuniões por Fonte</span></div>
+    <div id="wes-fonte-table"></div>
+  </div>
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Receita Diária</span></div>
+    <div class="detail-chart-body"><canvas id="chart-wes-rev-daily"></canvas></div>
+  </div>
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Pipeline</span></div>
+    <div id="wes-pipeline"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ============================================================
+//  CONFIGURAÇÃO DO GOOGLE SHEETS
+//  Cole aqui o ID da sua planilha (está na URL dela).
+//  Exemplo: se a URL é https://docs.google.com/spreadsheets/d/1aBcDeFgHiJkL/edit
+//  o ID é: 1aBcDeFgHiJkL
+// ============================================================
+
+const SHEET_ID = '1x2BLOVYb5Ulk5QUzBhVyUCSutXRnkV3VnBhpn6Pay6A';
+
+// Intervalo de atualização automática (em segundos)
+const REFRESH_INTERVAL = 60;
+
+// ============================================================
+//  NÃO EDITE ABAIXO
+// ============================================================
+
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Dashboard`;
+
+let chartInstances = [];
+
+function destroyCharts() {
+  chartInstances.forEach(c => c.destroy());
+  chartInstances = [];
+}
+
+async function fetchData() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    return rows;
+  } catch(e) {
+    console.error('Erro ao buscar dados:', e);
+    return null;
+  }
+}
+
+function parseCSV(text) {
+  const lines = text.split('\n');
+  return lines.map(line => {
+    const cells = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i];
+      if (ch === '"') {
+        inQuotes = !inQuotes;
+      } else if (ch === ',' && !inQuotes) {
+        cells.push(current.trim());
+        current = '';
+      } else {
+        current += ch;
+      }
+    }
+    cells.push(current.trim());
+    return cells;
+  });
+}
+
+function num(val) {
+  if (!val || val === '') return 0;
+  const cleaned = val.replace(/[^0-9.-]/g, '');
+  return parseFloat(cleaned) || 0;
+}
+
+function extractData(rows) {
+  // Config: rows 2-10 (index 2-10), col B (index 1)
+  const mes = rows[2] ? rows[2][1] || 'Abril/2026' : 'Abril/2026';
+  const metaRecVin = num(rows[3] ? rows[3][1] : '75000');
+  const metaRecWes = num(rows[4] ? rows[4][1] : '50000');
+  const metaReuVin = num(rows[5] ? rows[5][1] : '60');
+  const metaReuWes = num(rows[6] ? rows[6][1] : '50');
+  const metaPropVin = num(rows[7] ? rows[7][1] : '40');
+  const metaPropWes = num(rows[8] ? rows[8][1] : '22');
+  const metaContVin = num(rows[9] ? rows[9][1] : '12');
+  const metaContWes = num(rows[10] ? rows[10][1] : '11');
+
+  // Vinícius data: rows 14-20 (index 14-20)
+  // Cols: A=date, B=receita, C=reu_bdr, D=reu_gabi, E=reu_proprias, F=indicacoes, G=de_reunioes, H=propostas, I=contratos
+  const vinData = [];
+  for (let i = 14; i <= 20; i++) {
+    const r = rows[i] || [];
+    vinData.push({
+      date: r[0] || '',
+      receita: num(r[1]),
+      reu_bdr: num(r[2]),
+      reu_gabi: num(r[3]),
+      reu_proprias: num(r[4]),
+      indicacoes: num(r[5]),
+      de_reunioes: num(r[6]),
+      propostas: num(r[7]),
+      contratos: num(r[8]),
+    });
+  }
+
+  // Wesley data: rows 25-31 (index 25-31)
+  // Cols: A=date, B=receita, C=reu_bdr, D=reu_proprias, E=lista, F=indicacoes, G=propostas, H=contratos
+  const wesData = [];
+  for (let i = 25; i <= 31; i++) {
+    const r = rows[i] || [];
+    wesData.push({
+      date: r[0] || '',
+      receita: num(r[1]),
+      reu_bdr: num(r[2]),
+      reu_proprias: num(r[3]),
+      lista: num(r[4]),
+      indicacoes: num(r[5]),
+      propostas: num(r[6]),
+      contratos: num(r[7]),
+    });
+  }
+
+  const labels = vinData.map(d => d.date || '');
+
+  return {
+    mes, labels,
+    vin: {
+      meta_receita: metaRecVin, meta_reunioes: metaReuVin,
+      meta_propostas: metaPropVin, meta_contratos: metaContVin,
+      receita_diaria: vinData.map(d => d.receita),
+      reu_bdr: vinData.map(d => d.reu_bdr),
+      reu_gabi: vinData.map(d => d.reu_gabi),
+      reu_proprias: vinData.map(d => d.reu_proprias),
+      reu_indicacoes: vinData.map(d => d.indicacoes),
+      reu_de_reunioes: vinData.map(d => d.de_reunioes),
+      propostas: vinData.reduce((s, d) => s + d.propostas, 0),
+      contratos: vinData.reduce((s, d) => s + d.contratos, 0),
+      meta_bdr: 24, meta_gabi: 6, meta_proprias: 6, meta_indicacoes: 10, meta_de_reunioes: 14,
+    },
+    wes: {
+      meta_receita: metaRecWes, meta_reunioes: metaReuWes,
+      meta_propostas: metaPropWes, meta_contratos: metaContWes,
+      receita_diaria: wesData.map(d => d.receita),
+      reu_bdr: wesData.map(d => d.reu_bdr),
+      reu_proprias: wesData.map(d => d.reu_proprias),
+      reu_lista: wesData.map(d => d.lista),
+      reu_indicacoes: wesData.map(d => d.indicacoes),
+      propostas: wesData.reduce((s, d) => s + d.propostas, 0),
+      contratos: wesData.reduce((s, d) => s + d.contratos, 0),
+      meta_bdr: 24, meta_proprias: 6, meta_lista: 10, meta_indicacoes: 10,
+    },
+  };
+}
+
+// Utilities
+function cumSum(arr) {
+  let s = 0;
+  return arr.map(v => { s += (v || 0); return s; });
+}
+
+function sum(arr) { return arr.reduce((a, b) => a + (b || 0), 0); }
+
+function formatBRL(v) {
+  return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 0 });
+}
+
+function findLastDataDay(arr) {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (arr[i] !== 0 && arr[i] !== null && arr[i] !== undefined) return i;
+  }
+  return 0;
+}
+
+function metaLineFn(total, days) {
+  return Array.from({length: days}, (_, i) => Math.round(total * (i) / (days - 1)));
+}
+
+// Charts
+Chart.defaults.color = '#7a7a90';
+Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
+Chart.defaults.font.family = "'Outfit', sans-serif";
+const gridColor = 'rgba(255,255,255,0.06)';
+
+function makeAccumChart(canvasId, labels, realData, metaTotal, maxY, isCurrency) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const days = labels.length;
+  const cumReal = cumSum(realData);
+  const cumMeta = metaLineFn(metaTotal, days);
+  const lastDay = findLastDataDay(realData);
+  const currentDay = Math.max(1, lastDay);
+
+  const realLine = cumReal.map((v, i) => i <= lastDay ? v : null);
+  const metaLine2 = cumMeta.map((v, i) => i <= currentDay ? v : null);
+  const metaFinalDot = cumMeta.map((v, i) => i === days - 1 ? metaTotal : null);
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.parentElement.clientHeight || 300);
+  gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)');
+  gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
+
+  const chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Realizado',
+          data: realLine,
+          borderColor: '#3b82f6',
+          backgroundColor: gradient,
+          borderWidth: 3.5,
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#3b82f6',
+          pointBorderColor: '#0a0a0f',
+          pointBorderWidth: 2,
+          pointRadius: (ctx) => ctx.dataIndex === lastDay ? 7 : 4,
+          pointHoverRadius: 8,
+          spanGaps: false,
+        },
+        {
+          label: 'Meta',
+          data: metaLine2,
+          borderColor: 'rgba(239, 68, 68, 0.6)',
+          borderWidth: 2,
+          borderDash: [8, 4],
+          fill: false,
+          tension: 0,
+          pointRadius: 0,
+          pointHoverRadius: 0,
+          spanGaps: false,
+        },
+        {
+          label: 'Meta Final',
+          data: metaFinalDot,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(239, 68, 68, 0.8)',
+          borderWidth: 0,
+          fill: false,
+          pointRadius: 8,
+          pointHoverRadius: 10,
+          pointStyle: 'circle',
+          pointBorderColor: 'rgba(239, 68, 68, 0.3)',
+          pointBorderWidth: 3,
+          showLine: false,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a28',
+          borderColor: '#2a2a3a',
+          borderWidth: 1,
+          titleFont: { weight: '700' },
+          callbacks: {
+            label: function(ctx) {
+              const v = ctx.parsed.y;
+              if (v === null) return '';
+              return ctx.dataset.label + ': ' + (isCurrency ? formatBRL(v) : v);
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: maxY,
+          grid: { color: gridColor },
+          ticks: {
+            callback: v => isCurrency ? (v >= 1000 ? (v/1000) + 'K' : v) : v,
+            font: { family: "'JetBrains Mono', monospace", size: 11 }
+          }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 } }
+        }
+      }
+    }
+  });
+  chartInstances.push(chart);
+}
+
+function makeDailyBars(canvasId, labels, dailyData) {
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const lastDay = findLastDataDay(dailyData);
+  const colors = dailyData.map((v, i) => i <= lastDay ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 0.15)');
+
+  const chart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: dailyData.map((v, i) => i <= lastDay ? v : 0),
+        backgroundColor: colors,
+        borderRadius: 6,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a28',
+          callbacks: { label: ctx => formatBRL(ctx.parsed.y) }
+        }
+      },
+      scales: {
+        y: {
+          grid: { color: gridColor },
+          ticks: {
+            callback: v => v >= 1000 ? (v/1000)+'K' : v,
+            font: { family: "'JetBrains Mono', monospace", size: 10 }
+          }
+        },
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+      }
+    }
+  });
+  chartInstances.push(chart);
+}
+
+function makeFonteTable(containerId, sources) {
+  let html = '<table class="fonte-table"><thead><tr><th>Fonte</th><th>Real</th><th>Meta</th><th>Progresso</th></tr></thead><tbody>';
+  sources.forEach(s => {
+    const pct = s.meta > 0 ? Math.round((s.real / s.meta) * 100) : 0;
+    const barColor = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--amber)' : 'var(--red)';
+    html += `<tr>
+      <td style="color:${s.color}">${s.name}</td>
+      <td>${s.real}</td>
+      <td style="color:var(--text-dim)">${s.meta}</td>
+      <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div><div class="bar-label">${pct}%</div></div></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function makePipeline(containerId, data) {
+  const stages = [
+    { name: 'Reuniões', real: data.reu_real, meta: data.reu_meta, color: 'var(--blue)' },
+    { name: 'Propostas', real: data.prop_real, meta: data.prop_meta, color: 'var(--amber)' },
+    { name: 'Contratos', real: data.cont_real, meta: data.cont_meta, color: 'var(--green)' },
+  ];
+  let html = '<table class="fonte-table"><thead><tr><th>Etapa</th><th>Real</th><th>Meta</th><th>Progresso</th></tr></thead><tbody>';
+  stages.forEach(s => {
+    const pct = s.meta > 0 ? Math.round((s.real / s.meta) * 100) : 0;
+    const barColor = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--amber)' : 'var(--red)';
+    html += `<tr>
+      <td style="color:${s.color};font-weight:600">${s.name}</td>
+      <td>${s.real}</td>
+      <td style="color:var(--text-dim)">${s.meta}</td>
+      <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div><div class="bar-label">${pct}%</div></div></td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  document.getElementById(containerId).innerHTML = html;
+}
+
+function renderAll(data) {
+  destroyCharts();
+
+  // Header
+  document.getElementById('mes-label').textContent = data.mes;
+  document.getElementById('updated-label').textContent = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+
+  // KPIs
+  const vinTotal = sum(data.vin.receita_diaria);
+  const wesTotal = sum(data.wes.receita_diaria);
+
+  document.getElementById('kpi-vin-meta').textContent = formatBRL(data.vin.meta_receita);
+  document.getElementById('kpi-vin-real').textContent = formatBRL(vinTotal);
+  const vinPct = data.vin.meta_receita > 0 ? Math.round((vinTotal / data.vin.meta_receita) * 100) : 0;
+  document.getElementById('kpi-vin-pct').innerHTML = `<span class="${vinPct >= 50 ? 'pct-up' : 'pct-down'}">${vinPct}% da meta</span>`;
+
+  document.getElementById('kpi-wes-meta').textContent = formatBRL(data.wes.meta_receita);
+  document.getElementById('kpi-wes-real').textContent = formatBRL(wesTotal);
+  const wesPct = data.wes.meta_receita > 0 ? Math.round((wesTotal / data.wes.meta_receita) * 100) : 0;
+  document.getElementById('kpi-wes-pct').innerHTML = `<span class="${wesPct >= 50 ? 'pct-up' : 'pct-down'}">${wesPct}% da meta</span>`;
+
+  // Reuniões totais por dia
+  const vinReuDiaria = data.labels.map((_, i) =>
+    (data.vin.reu_bdr[i]||0) + (data.vin.reu_gabi[i]||0) + (data.vin.reu_proprias[i]||0) +
+    (data.vin.reu_indicacoes[i]||0) + (data.vin.reu_de_reunioes[i]||0)
+  );
+  const wesReuDiaria = data.labels.map((_, i) =>
+    (data.wes.reu_bdr[i]||0) + (data.wes.reu_proprias[i]||0) +
+    (data.wes.reu_lista[i]||0) + (data.wes.reu_indicacoes[i]||0)
+  );
+
+  // Main charts
+  makeAccumChart('chart-vin-rev', data.labels, data.vin.receita_diaria, data.vin.meta_receita, 100000, true);
+  makeAccumChart('chart-wes-rev', data.labels, data.wes.receita_diaria, data.wes.meta_receita, 100000, true);
+  makeAccumChart('chart-vin-reu', data.labels, vinReuDiaria, data.vin.meta_reunioes, 70, false);
+  makeAccumChart('chart-wes-reu', data.labels, wesReuDiaria, data.wes.meta_reunioes, 70, false);
+
+  // Daily bars
+  makeDailyBars('chart-vin-rev-daily', data.labels, data.vin.receita_diaria);
+  makeDailyBars('chart-wes-rev-daily', data.labels, data.wes.receita_diaria);
+
+  // Fonte tables
+  makeFonteTable('vin-fonte-table', [
+    { name: 'BDRs', real: sum(data.vin.reu_bdr), meta: data.vin.meta_bdr, color: 'var(--blue)' },
+    { name: 'Gabi', real: sum(data.vin.reu_gabi), meta: data.vin.meta_gabi, color: 'var(--green)' },
+    { name: 'Próprias', real: sum(data.vin.reu_proprias), meta: data.vin.meta_proprias, color: 'var(--amber)' },
+    { name: 'Indicações', real: sum(data.vin.reu_indicacoes), meta: data.vin.meta_indicacoes, color: 'var(--purple)' },
+    { name: 'De Reuniões', real: sum(data.vin.reu_de_reunioes), meta: data.vin.meta_de_reunioes, color: 'var(--cyan)' },
+  ]);
+
+  makeFonteTable('wes-fonte-table', [
+    { name: 'BDRs', real: sum(data.wes.reu_bdr), meta: data.wes.meta_bdr, color: 'var(--blue)' },
+    { name: 'Próprias', real: sum(data.wes.reu_proprias), meta: data.wes.meta_proprias, color: 'var(--amber)' },
+    { name: 'Lista Contatos', real: sum(data.wes.reu_lista), meta: data.wes.meta_lista, color: 'var(--orange)' },
+    { name: 'Indicações', real: sum(data.wes.reu_indicacoes), meta: data.wes.meta_indicacoes, color: 'var(--purple)' },
+  ]);
+
+  // Pipeline
+  makePipeline('vin-pipeline', {
+    reu_real: sum(vinReuDiaria), reu_meta: data.vin.meta_reunioes,
+    prop_real: data.vin.propostas, prop_meta: data.vin.meta_propostas,
+    cont_real: data.vin.contratos, cont_meta: data.vin.meta_contratos,
+  });
+
+  makePipeline('wes-pipeline', {
+    reu_real: sum(wesReuDiaria), reu_meta: data.wes.meta_reunioes,
+    prop_real: data.wes.propostas, prop_meta: data.wes.meta_propostas,
+    cont_real: data.wes.contratos, cont_meta: data.wes.meta_contratos,
+  });
+}
+
+// ===== INIT + AUTO-REFRESH =====
+async function loadAndRender() {
+  const rows = await fetchData();
+  if (rows) {
+    const data = extractData(rows);
+    renderAll(data);
+  }
+}
+
+// First load
+loadAndRender();
+
+// Auto-refresh every 60 seconds
+setInterval(loadAndRender, REFRESH_INTERVAL * 1000);
+
+</script>
+</body>
+</html>
