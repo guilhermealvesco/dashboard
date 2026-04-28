@@ -395,7 +395,8 @@
     <div class="chart-header">
       <div class="chart-title"><span class="name">Vinícius</span><span class="type">· Reuniões Acumuladas</span></div>
       <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
+        <div class="legend-item"><div class="legend-dot real"></div>Agendadas</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>Realizadas</div>
         <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
       </div>
     </div>
@@ -405,7 +406,8 @@
     <div class="chart-header">
       <div class="chart-title"><span class="name">Wesley</span><span class="type">· Reuniões Acumuladas</span></div>
       <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
+        <div class="legend-item"><div class="legend-dot real"></div>Agendadas</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>Realizadas</div>
         <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
       </div>
     </div>
@@ -585,12 +587,13 @@ function extractData(rows) {
         date: r[0].trim(),
         receita: num(r[1]),
         reu_bdr: num(r[2]),
-        reu_gabi: num(r[3]),
-        reu_proprias: num(r[4]),
-        indicacoes: num(r[5]),
-        de_reunioes: num(r[6]),
-        propostas: num(r[7]),
-        contratos: num(r[8]),
+        reu_realizadas: num(r[3]),
+        reu_gabi: num(r[4]),
+        reu_proprias: num(r[5]),
+        indicacoes: num(r[6]),
+        de_reunioes: num(r[7]),
+        propostas: num(r[8]),
+        contratos: num(r[9]),
       });
     }
   }
@@ -606,11 +609,12 @@ function extractData(rows) {
         date: r[0].trim(),
         receita: num(r[1]),
         reu_bdr: num(r[2]),
-        reu_proprias: num(r[3]),
-        lista: num(r[4]),
-        indicacoes: num(r[5]),
-        propostas: num(r[6]),
-        contratos: num(r[7]),
+        reu_realizadas: num(r[3]),
+        reu_proprias: num(r[4]),
+        lista: num(r[5]),
+        indicacoes: num(r[6]),
+        propostas: num(r[7]),
+        contratos: num(r[8]),
       });
     }
   }
@@ -624,6 +628,7 @@ function extractData(rows) {
       meta_propostas: metaPropVin, meta_contratos: metaContVin,
       receita_diaria: vinData.map(d => d.receita),
       reu_bdr: vinData.map(d => d.reu_bdr),
+      reu_realizadas: vinData.map(d => d.reu_realizadas),
       reu_gabi: vinData.map(d => d.reu_gabi),
       reu_proprias: vinData.map(d => d.reu_proprias),
       reu_indicacoes: vinData.map(d => d.indicacoes),
@@ -637,6 +642,7 @@ function extractData(rows) {
       meta_propostas: metaPropWes, meta_contratos: metaContWes,
       receita_diaria: wesData.map(d => d.receita),
       reu_bdr: wesData.map(d => d.reu_bdr),
+      reu_realizadas: wesData.map(d => d.reu_realizadas),
       reu_proprias: wesData.map(d => d.reu_proprias),
       reu_lista: wesData.map(d => d.lista),
       reu_indicacoes: wesData.map(d => d.indicacoes),
@@ -682,7 +688,7 @@ Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
 Chart.defaults.font.family = "'Outfit', sans-serif";
 const gridColor = 'rgba(255,255,255,0.06)';
 
-function makeAccumChart(canvasId, labels, realData, metaTotal, maxY, isCurrency) {
+function makeAccumChart(canvasId, labels, realData, metaTotal, maxY, isCurrency, realizadasData) {
   const ctx = document.getElementById(canvasId).getContext('2d');
   const days = labels.length;
   const cumReal = cumSum(realData);
@@ -707,60 +713,90 @@ function makeAccumChart(canvasId, labels, realData, metaTotal, maxY, isCurrency)
   gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)');
   gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
 
+  const datasets = [
+    {
+      label: 'Agendadas',
+      data: realLine,
+      borderColor: '#3b82f6',
+      backgroundColor: gradient,
+      borderWidth: 3.5,
+      fill: true,
+      tension: 0.4,
+      pointBackgroundColor: '#3b82f6',
+      pointBorderColor: '#0a0a0f',
+      pointBorderWidth: 2,
+      pointRadius: function(ctx) {
+        if (ctx.dataIndex === todayIdx) return 7;
+        if (ctx.dataIndex <= todayIdx) return 3;
+        return 0;
+      },
+      pointHoverRadius: 8,
+      spanGaps: false,
+    },
+    {
+      label: 'Meta',
+      data: metaLine2,
+      borderColor: 'rgba(239, 68, 68, 0.6)',
+      borderWidth: 2,
+      borderDash: [8, 4],
+      fill: false,
+      tension: 0,
+      pointRadius: 0,
+      pointHoverRadius: 0,
+      spanGaps: false,
+    },
+    {
+      label: 'Meta Final',
+      data: metaFinalDot,
+      borderColor: 'transparent',
+      backgroundColor: 'rgba(239, 68, 68, 0.8)',
+      borderWidth: 0,
+      fill: false,
+      pointRadius: 8,
+      pointHoverRadius: 10,
+      pointStyle: 'circle',
+      pointBorderColor: 'rgba(239, 68, 68, 0.3)',
+      pointBorderWidth: 3,
+      showLine: false,
+    }
+  ];
+
+  // Add Realizadas line (purple) if data is provided
+  if (realizadasData) {
+    const cumRealizadas = cumSum(realizadasData);
+    const realizadasLine = cumRealizadas.map((v, i) => i <= todayIdx ? v : null);
+    
+    datasets.splice(1, 0, {
+      label: 'Realizadas',
+      data: realizadasLine,
+      borderColor: '#a855f7',
+      backgroundColor: 'transparent',
+      borderWidth: 3,
+      fill: false,
+      tension: 0.4,
+      pointBackgroundColor: '#a855f7',
+      pointBorderColor: '#0a0a0f',
+      pointBorderWidth: 2,
+      pointRadius: function(ctx) {
+        if (ctx.dataIndex === todayIdx) return 6;
+        if (ctx.dataIndex <= todayIdx) return 2;
+        return 0;
+      },
+      pointHoverRadius: 7,
+      spanGaps: false,
+    });
+  }
+
+  // Update first dataset label for non-currency (reunions) charts
+  if (!isCurrency) {
+    datasets[0].label = 'Agendadas';
+  } else {
+    datasets[0].label = 'Realizado';
+  }
+
   const chart = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: 'Realizado',
-          data: realLine,
-          borderColor: '#3b82f6',
-          backgroundColor: gradient,
-          borderWidth: 3.5,
-          fill: true,
-          tension: 0.4,
-          pointBackgroundColor: '#3b82f6',
-          pointBorderColor: '#0a0a0f',
-          pointBorderWidth: 2,
-          pointRadius: function(ctx) {
-            // Bigger dot on today
-            if (ctx.dataIndex === todayIdx) return 7;
-            // Normal dot on days with data
-            if (ctx.dataIndex <= todayIdx) return 3;
-            return 0;
-          },
-          pointHoverRadius: 8,
-          spanGaps: false,
-        },
-        {
-          label: 'Meta',
-          data: metaLine2,
-          borderColor: 'rgba(239, 68, 68, 0.6)',
-          borderWidth: 2,
-          borderDash: [8, 4],
-          fill: false,
-          tension: 0,
-          pointRadius: 0,
-          pointHoverRadius: 0,
-          spanGaps: false,
-        },
-        {
-          label: 'Meta Final',
-          data: metaFinalDot,
-          borderColor: 'transparent',
-          backgroundColor: 'rgba(239, 68, 68, 0.8)',
-          borderWidth: 0,
-          fill: false,
-          pointRadius: 8,
-          pointHoverRadius: 10,
-          pointStyle: 'circle',
-          pointBorderColor: 'rgba(239, 68, 68, 0.3)',
-          pointBorderWidth: 3,
-          showLine: false,
-        }
-      ]
-    },
+    data: { labels: labels, datasets: datasets },
     options: {
       responsive: true,
       maintainAspectRatio: false,
@@ -921,8 +957,8 @@ function renderAll(data) {
   // Main charts
   makeAccumChart('chart-vin-rev', data.labels, data.vin.receita_diaria, data.vin.meta_receita, 100000, true);
   makeAccumChart('chart-wes-rev', data.labels, data.wes.receita_diaria, data.wes.meta_receita, 100000, true);
-  makeAccumChart('chart-vin-reu', data.labels, vinReuDiaria, data.vin.meta_reunioes, 70, false);
-  makeAccumChart('chart-wes-reu', data.labels, wesReuDiaria, data.wes.meta_reunioes, 70, false);
+  makeAccumChart('chart-vin-reu', data.labels, vinReuDiaria, data.vin.meta_reunioes, 70, false, data.vin.reu_realizadas);
+  makeAccumChart('chart-wes-reu', data.labels, wesReuDiaria, data.wes.meta_reunioes, 70, false, data.wes.reu_realizadas);
 
   // Daily bars
   makeDailyBars('chart-vin-rev-daily', data.labels, data.vin.receita_diaria);
