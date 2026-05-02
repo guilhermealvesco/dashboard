@@ -3,12 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RESOLVE — Dashboard Closers</title>
+<title>RESOLVE — Dashboard Maio/2026</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
     --bg: #0a0a0f;
     --surface: #12121a;
@@ -19,318 +17,80 @@
     --blue: #3b82f6;
     --blue-glow: rgba(59, 130, 246, 0.3);
     --red: #ef4444;
-    --red-glow: rgba(239, 68, 68, 0.15);
     --green: #22c55e;
     --green-glow: rgba(34, 197, 94, 0.3);
     --amber: #f59e0b;
     --purple: #a855f7;
     --cyan: #06b6d4;
     --orange: #f97316;
+    --pink: #ec4899;
   }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Outfit', sans-serif;
-    overflow-x: hidden;
-  }
-
-  .header {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%);
-    border-bottom: 1px solid var(--border);
-    padding: 20px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .logo {
-    font-size: 28px;
-    font-weight: 900;
-    letter-spacing: -1px;
-    background: linear-gradient(135deg, var(--blue), var(--cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .header-divider {
-    width: 2px;
-    height: 30px;
-    background: var(--border);
-  }
-
-  .header-subtitle {
-    font-size: 14px;
-    color: var(--text-dim);
-    font-weight: 400;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-
-  .header-badge {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    color: var(--text-dim);
-  }
-
-  .header-badge span {
-    color: var(--blue);
-    font-weight: 700;
-  }
-
-  .pulse-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 8px var(--green-glow);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.6; transform: scale(0.8); }
-  }
-
-  .kpi-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    padding: 20px 40px;
-  }
-
-  .kpi-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .kpi-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-  }
-
+  body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+  .header { background: linear-gradient(135deg, var(--surface) 0%, var(--bg) 100%); border-bottom: 1px solid var(--border); padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; }
+  .header-left { display: flex; align-items: center; gap: 16px; }
+  .logo { font-size: 28px; font-weight: 900; letter-spacing: -1px; background: linear-gradient(135deg, var(--blue), var(--cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .header-divider { width: 2px; height: 30px; background: var(--border); }
+  .header-subtitle { font-size: 14px; color: var(--text-dim); font-weight: 400; letter-spacing: 2px; text-transform: uppercase; }
+  .header-right { display: flex; align-items: center; gap: 24px; }
+  .header-badge { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); }
+  .header-badge span { color: var(--blue); font-weight: 700; }
+  .pulse-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green-glow); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(0.8); } }
+  .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 20px 40px; }
+  .kpi-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; position: relative; overflow: hidden; }
+  .kpi-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .kpi-card.vin-meta::before { background: linear-gradient(90deg, var(--blue), var(--cyan)); }
   .kpi-card.vin-real::before { background: linear-gradient(90deg, var(--green), var(--cyan)); }
   .kpi-card.wes-meta::before { background: linear-gradient(90deg, var(--purple), var(--blue)); }
   .kpi-card.wes-real::before { background: linear-gradient(90deg, var(--amber), var(--orange)); }
-
-  .kpi-label {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-    font-weight: 600;
-  }
-
-  .kpi-value {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 32px;
-    font-weight: 700;
-  }
-
+  .kpi-label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 8px; font-weight: 600; }
+  .kpi-value { font-family: 'JetBrains Mono', monospace; font-size: 32px; font-weight: 700; }
   .kpi-value.blue { color: var(--blue); }
   .kpi-value.green { color: var(--green); }
   .kpi-value.purple { color: var(--purple); }
   .kpi-value.amber { color: var(--amber); }
-
-  .kpi-sub {
-    font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 6px;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
+  .kpi-sub { font-size: 12px; color: var(--text-dim); margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
   .kpi-sub .pct-up { color: var(--green); }
   .kpi-sub .pct-down { color: var(--red); }
-
-  .charts-main {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 16px;
-    padding: 0 40px 20px;
-    height: auto;
-    min-height: 500px;
-  }
-
-  .chart-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px 24px;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .chart-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-  }
-
-  .chart-title {
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
+  .charts-main { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; padding: 0 40px 20px; height: auto; min-height: 500px; }
+  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; display: flex; flex-direction: column; }
+  .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .chart-title { font-size: 14px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
   .chart-title .name { color: var(--text); }
   .chart-title .type { color: var(--text-dim); font-weight: 400; margin-left: 8px; }
-
-  .chart-legend {
-    display: flex;
-    gap: 16px;
-  }
-
-  .legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text-dim);
-  }
-
-  .legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
+  .chart-legend { display: flex; gap: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-dim); }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
   .legend-dot.real { background: var(--blue); box-shadow: 0 0 6px var(--blue-glow); }
   .legend-dot.meta { background: var(--red); }
-
-  .chart-body {
-    flex: 1;
-    position: relative;
-  }
-
-  canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  .section-divider {
-    padding: 30px 40px 10px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .section-divider h2 {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .section-divider .line {
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  .detail-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    padding: 16px 40px 40px;
-  }
-
-  .detail-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-  }
-
-  .detail-card .chart-title {
-    margin-bottom: 12px;
-    font-size: 13px;
-  }
-
-  .detail-chart-body {
-    height: 200px;
-    position: relative;
-  }
-
-  .fonte-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 8px;
-  }
-
-  .fonte-table th {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--text-dim);
-    text-align: left;
-    padding: 6px 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .fonte-table td {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    padding: 8px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
-  }
-
-  .fonte-table .bar-cell {
-    width: 50%;
-  }
-
-  .bar-bg {
-    background: var(--surface2);
-    border-radius: 4px;
-    height: 20px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 1s ease;
-  }
-
-  .bar-label {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 10px;
-    font-weight: 700;
-    color: var(--text);
-  }
+  .chart-body { flex: 1; position: relative; }
+  canvas { width: 100% !important; height: 100% !important; }
+  .section-divider { padding: 30px 40px 10px; display: flex; align-items: center; gap: 16px; }
+  .section-divider h2 { font-size: 18px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; }
+  .section-divider .line { flex: 1; height: 1px; background: var(--border); }
+  .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 16px 40px 40px; }
+  .detail-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 40px 40px; }
+  .detail-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .detail-card .chart-title { margin-bottom: 12px; font-size: 13px; }
+  .detail-chart-body { height: 250px; position: relative; }
+  .fonte-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .fonte-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); }
+  .fonte-table td { font-family: 'JetBrains Mono', monospace; font-size: 13px; padding: 8px; border-bottom: 1px solid rgba(255,255,255,0.03); }
+  .fonte-table .bar-cell { width: 50%; }
+  .bar-bg { background: var(--surface2); border-radius: 4px; height: 20px; position: relative; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .bar-label { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 10px; font-weight: 700; color: var(--text); }
+  .leaderboard { margin-top: 8px; }
+  .lb-row { display: flex; align-items: center; padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); gap: 12px; }
+  .lb-rank { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 800; width: 30px; text-align: center; }
+  .lb-name { font-weight: 600; font-size: 14px; flex: 1; }
+  .lb-stat { font-family: 'JetBrains Mono', monospace; font-size: 13px; text-align: right; min-width: 60px; }
+  .lb-bar { width: 120px; }
+  .bdr-kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 10px 40px 20px; }
+  .bdr-kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; text-align: center; }
+  .bdr-kpi .bdr-name { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--text-dim); margin-bottom: 6px; }
+  .bdr-kpi .bdr-val { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 700; }
+  .bdr-kpi .bdr-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
 </style>
 </head>
 <body>
@@ -339,676 +99,442 @@
   <div class="header-left">
     <div class="logo">RESOLVE</div>
     <div class="header-divider"></div>
-    <div class="header-subtitle">Performance Closers</div>
+    <div class="header-subtitle">Performance Closers & BDRs</div>
   </div>
   <div class="header-right">
-    <div class="header-badge">Mês: <span id="mes-label">Abril/2026</span></div>
-    <div class="header-badge">Dias úteis restantes: <span id="dias-label">-</span></div>
+    <div class="header-badge">Mês: <span id="mes-label">Maio/2026</span></div>
+    <div class="header-badge">Dias restantes: <span id="dias-label">-</span></div>
     <div class="header-badge">Atualizado: <span id="updated-label"></span></div>
     <div class="pulse-dot"></div>
   </div>
 </div>
 
+<!-- CLOSERS KPIs -->
 <div class="kpi-strip">
-  <div class="kpi-card vin-meta">
-    <div class="kpi-label">Meta Vinícius</div>
-    <div class="kpi-value blue" id="kpi-vin-meta">R$ 75.000</div>
-  </div>
-  <div class="kpi-card vin-real">
-    <div class="kpi-label">Realizado Vinícius</div>
-    <div class="kpi-value green" id="kpi-vin-real">R$ 0</div>
-    <div class="kpi-sub" id="kpi-vin-pct"></div>
-  </div>
-  <div class="kpi-card wes-meta">
-    <div class="kpi-label">Meta Wesley</div>
-    <div class="kpi-value purple" id="kpi-wes-meta">R$ 50.000</div>
-  </div>
-  <div class="kpi-card wes-real">
-    <div class="kpi-label">Realizado Wesley</div>
-    <div class="kpi-value amber" id="kpi-wes-real">R$ 0</div>
-    <div class="kpi-sub" id="kpi-wes-pct"></div>
-  </div>
+  <div class="kpi-card vin-meta"><div class="kpi-label">Meta Vinícius (Closer)</div><div class="kpi-value blue" id="kpi-vin-meta">-</div></div>
+  <div class="kpi-card vin-real"><div class="kpi-label">Realizado Vinícius</div><div class="kpi-value green" id="kpi-vin-real">-</div><div class="kpi-sub" id="kpi-vin-pct"></div></div>
+  <div class="kpi-card wes-meta"><div class="kpi-label">Meta Wesley</div><div class="kpi-value purple" id="kpi-wes-meta">-</div></div>
+  <div class="kpi-card wes-real"><div class="kpi-label">Realizado Wesley</div><div class="kpi-value amber" id="kpi-wes-real">-</div><div class="kpi-sub" id="kpi-wes-pct"></div></div>
 </div>
 
+<!-- CLOSERS CHARTS -->
 <div class="charts-main">
   <div class="chart-card">
     <div class="chart-header">
-      <div class="chart-title"><span class="name">Vinícius</span><span class="type">· Receita Acumulada</span></div>
-      <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
-        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
-      </div>
+      <div class="chart-title"><span class="name">Vinícius (Closer)</span><span class="type">· Receita Acumulada</span></div>
+      <div class="chart-legend"><div class="legend-item"><div class="legend-dot real"></div>Realizado</div><div class="legend-item"><div class="legend-dot meta"></div>Meta</div></div>
     </div>
     <div class="chart-body"><canvas id="chart-vin-rev"></canvas></div>
   </div>
   <div class="chart-card">
     <div class="chart-header">
       <div class="chart-title"><span class="name">Wesley</span><span class="type">· Receita Acumulada</span></div>
-      <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot real"></div>Realizado</div>
-        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
-      </div>
+      <div class="chart-legend"><div class="legend-item"><div class="legend-dot real"></div>Realizado</div><div class="legend-item"><div class="legend-dot meta"></div>Meta</div></div>
     </div>
     <div class="chart-body"><canvas id="chart-wes-rev"></canvas></div>
   </div>
   <div class="chart-card">
     <div class="chart-header">
-      <div class="chart-title"><span class="name">Vinícius</span><span class="type">· Reuniões Acumuladas</span></div>
-      <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot real"></div>Agendadas</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>Realizadas</div>
-        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
-      </div>
+      <div class="chart-title"><span class="name">Vinícius (Closer)</span><span class="type">· Reuniões Acumuladas</span></div>
+      <div class="chart-legend"><div class="legend-item"><div class="legend-dot real"></div>Agendadas</div><div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>Realizadas</div><div class="legend-item"><div class="legend-dot meta"></div>Meta</div></div>
     </div>
     <div class="chart-body"><canvas id="chart-vin-reu"></canvas></div>
   </div>
   <div class="chart-card">
     <div class="chart-header">
       <div class="chart-title"><span class="name">Wesley</span><span class="type">· Reuniões Acumuladas</span></div>
-      <div class="chart-legend">
-        <div class="legend-item"><div class="legend-dot real"></div>Agendadas</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>Realizadas</div>
-        <div class="legend-item"><div class="legend-dot meta"></div>Meta</div>
-      </div>
+      <div class="chart-legend"><div class="legend-item"><div class="legend-dot real"></div>Agendadas</div><div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div>Realizadas</div><div class="legend-item"><div class="legend-dot meta"></div>Meta</div></div>
     </div>
     <div class="chart-body"><canvas id="chart-wes-reu"></canvas></div>
   </div>
 </div>
 
-<!-- DESTRINCHADOS -->
-<div class="section-divider">
-  <h2>Vinícius — Detalhado</h2>
-  <div class="line"></div>
+<!-- BDR SECTION -->
+<div class="section-divider"><h2>BDRs — Agendamentos Acumulados</h2><div class="line"></div></div>
+
+<div class="bdr-kpi-strip" id="bdr-kpis"></div>
+
+<div class="detail-grid-2">
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Agendamentos Acumulados por BDR</span></div>
+    <div class="detail-chart-body"><canvas id="chart-bdr-agend"></canvas></div>
+  </div>
+  <div class="detail-card">
+    <div class="chart-title"><span class="name">Leaderboard & Taxa No-Show</span></div>
+    <div id="bdr-leaderboard"></div>
+  </div>
 </div>
 
+<!-- CLOSER DETAILS -->
+<div class="section-divider"><h2>Vinícius (Closer) — Detalhado</h2><div class="line"></div></div>
 <div class="detail-grid">
-  <div class="detail-card">
-    <div class="chart-title"><span class="name">Reuniões por Fonte</span></div>
-    <div id="vin-fonte-table"></div>
-  </div>
-  <div class="detail-card">
-    <div class="chart-title"><span class="name">Receita Diária</span></div>
-    <div class="detail-chart-body"><canvas id="chart-vin-rev-daily"></canvas></div>
-  </div>
-  <div class="detail-card">
-    <div class="chart-title"><span class="name">Pipeline</span></div>
-    <div id="vin-pipeline"></div>
-  </div>
+  <div class="detail-card"><div class="chart-title"><span class="name">Reuniões por Fonte</span></div><div id="vin-fonte-table"></div></div>
+  <div class="detail-card"><div class="chart-title"><span class="name">Receita Diária</span></div><div class="detail-chart-body"><canvas id="chart-vin-rev-daily"></canvas></div></div>
+  <div class="detail-card"><div class="chart-title"><span class="name">Pipeline</span></div><div id="vin-pipeline"></div></div>
 </div>
 
-<div class="section-divider">
-  <h2>Wesley — Detalhado</h2>
-  <div class="line"></div>
-</div>
-
+<div class="section-divider"><h2>Wesley — Detalhado</h2><div class="line"></div></div>
 <div class="detail-grid">
-  <div class="detail-card">
-    <div class="chart-title"><span class="name">Reuniões por Fonte</span></div>
-    <div id="wes-fonte-table"></div>
-  </div>
-  <div class="detail-card">
-    <div class="chart-title"><span class="name">Receita Diária</span></div>
-    <div class="detail-chart-body"><canvas id="chart-wes-rev-daily"></canvas></div>
-  </div>
-  <div class="detail-card">
-    <div class="chart-title"><span class="name">Pipeline</span></div>
-    <div id="wes-pipeline"></div>
-  </div>
+  <div class="detail-card"><div class="chart-title"><span class="name">Reuniões por Fonte</span></div><div id="wes-fonte-table"></div></div>
+  <div class="detail-card"><div class="chart-title"><span class="name">Receita Diária</span></div><div class="detail-chart-body"><canvas id="chart-wes-rev-daily"></canvas></div></div>
+  <div class="detail-card"><div class="chart-title"><span class="name">Pipeline</span></div><div id="wes-pipeline"></div></div>
 </div>
+
+<!-- BDR DETAILS -->
+<div class="section-divider"><h2>BDRs — Detalhado Individual</h2><div class="line"></div></div>
+<div class="detail-grid-2" id="bdr-detail-charts"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-// ============================================================
-//  CONFIGURAÇÃO
-// ============================================================
-
 const SHEET_ID = '1x2BLOVYb5Ulk5QUzBhVyUCSutXRnkV3VnBhpn6Pay6A';
 const REFRESH_INTERVAL = 60;
-
-// ============================================================
-//  NÃO EDITE ABAIXO
-// ============================================================
-
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=1964031287`;
 
-let chartInstances = [];
+const BDR_COLORS = {
+  'ROMMEL': '#3b82f6',
+  'VINÍCIUS (BDR)': '#a855f7',
+  'GABRIEL': '#f59e0b',
+  'NAYRLA': '#ec4899',
+};
 
-function destroyCharts() {
-  chartInstances.forEach(c => c.destroy());
-  chartInstances = [];
-}
+let chartInstances = [];
+function destroyCharts() { chartInstances.forEach(c => c.destroy()); chartInstances = []; }
 
 async function fetchData() {
-  try {
-    const res = await fetch(SHEET_URL);
-    const text = await res.text();
-    return parseCSV(text);
-  } catch(e) {
-    console.error('Erro ao buscar dados:', e);
-    return null;
-  }
+  try { const r = await fetch(SHEET_URL); return parseCSV(await r.text()); }
+  catch(e) { console.error('Erro:', e); return null; }
 }
 
 function parseCSV(text) {
-  const lines = text.split('\n');
-  return lines.map(line => {
-    const cells = [];
-    let current = '';
-    let inQuotes = false;
+  return text.split('\n').map(line => {
+    const cells = []; let cur = '', inQ = false;
     for (let i = 0; i < line.length; i++) {
       const ch = line[i];
-      if (ch === '"') {
-        inQuotes = !inQuotes;
-      } else if (ch === ',' && !inQuotes) {
-        cells.push(current.trim());
-        current = '';
-      } else {
-        current += ch;
-      }
+      if (ch === '"') inQ = !inQ;
+      else if (ch === ',' && !inQ) { cells.push(cur.trim()); cur = ''; }
+      else cur += ch;
     }
-    cells.push(current.trim());
+    cells.push(cur.trim());
     return cells;
   });
 }
 
 function num(val) {
   if (!val || val === '') return 0;
-  let cleaned = val.replace(/[^0-9.,-]/g, '');
-  cleaned = cleaned.replace(/\./g, '').replace(',', '.');
-  return parseFloat(cleaned) || 0;
+  let c = val.replace(/[^0-9.,-]/g, '').replace(/\./g, '').replace(',', '.');
+  return parseFloat(c) || 0;
 }
 
-// ============================================================
-//  FLEXIBLE DATA EXTRACTION
-//  Procura pelas labels na planilha ao invés de depender
-//  de posições fixas. Funciona com qualquer número de dias.
-// ============================================================
+function isDateCell(val) { return val && /^\d{1,2}\/\d{2}$/.test(val.trim()); }
 
-function findRowStartingWith(rows, text) {
-  return rows.findIndex(r => r[0] && r[0].trim().toUpperCase().startsWith(text.toUpperCase()));
-}
-
-function isDateCell(val) {
-  // Matches DD/MM format
-  return val && /^\d{1,2}\/\d{2}$/.test(val.trim());
-}
-
-function parseDateStr(dateStr) {
-  // "27/04" => Date object for 2026-04-27
-  const parts = dateStr.trim().split('/');
-  if (parts.length !== 2) return null;
-  const day = parseInt(parts[0]);
-  const month = parseInt(parts[1]) - 1;
-  const now = new Date();
-  const year = now.getFullYear();
-  return new Date(year, month, day);
+function parseDateStr(ds) {
+  const p = ds.trim().split('/');
+  if (p.length !== 2) return null;
+  return new Date(new Date().getFullYear(), parseInt(p[1])-1, parseInt(p[0]));
 }
 
 function getTodayIndex(labels) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  
-  for (let i = labels.length - 1; i >= 0; i--) {
-    const d = parseDateStr(labels[i]);
-    if (d && d <= today) return i;
-  }
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = labels.length-1; i >= 0; i--) { const d = parseDateStr(labels[i]); if (d && d <= today) return i; }
   return 0;
 }
 
+function findSectionStart(rows, keyword) {
+  return rows.findIndex(r => r[0] && r[0].trim().toUpperCase().includes(keyword.toUpperCase()));
+}
+
+function readDateRows(rows, startAfterHeader) {
+  const data = [];
+  for (let i = startAfterHeader; i < rows.length; i++) {
+    if (!isDateCell(rows[i][0])) break;
+    data.push(rows[i]);
+  }
+  return data;
+}
+
 function extractData(rows) {
-  // Config values - search by label
-  let mes = 'Abril/2026', metaRecVin = 75000, metaRecWes = 50000;
-  let metaReuVin = 60, metaReuWes = 50, metaPropVin = 40, metaPropWes = 22;
-  let metaContVin = 12, metaContWes = 11;
+  // Config
+  let mes='Maio/2026', metaRecVin=150000, metaRecWes=100000, metaReuVin=100, metaReuWes=70;
+  let metaPropVin=63, metaPropWes=43, metaContVin=25, metaContWes=17;
+  let bdrMin=49, bdrMeta=70, bdrObj=110;
 
-  for (let i = 0; i < Math.min(rows.length, 15); i++) {
-    const label = (rows[i][0] || '').trim();
-    const val = rows[i][1] || '';
-    if (label.includes('Mês') || label.includes('Período')) mes = val;
-    else if (label.includes('Meta Receita') && label.includes('cius')) metaRecVin = num(val);
-    else if (label.includes('Meta Receita') && label.includes('esley')) metaRecWes = num(val);
-    else if (label.includes('Reuniões') && label.includes('cius') && label.includes('Meta')) metaReuVin = num(val);
-    else if (label.includes('Reuniões') && label.includes('esley') && label.includes('Meta')) metaReuWes = num(val);
-    else if (label.includes('Propostas') && label.includes('cius') && label.includes('Meta')) metaPropVin = num(val);
-    else if (label.includes('Propostas') && label.includes('esley') && label.includes('Meta')) metaPropWes = num(val);
-    else if (label.includes('Contratos') && label.includes('cius') && label.includes('Meta')) metaContVin = num(val);
-    else if (label.includes('Contratos') && label.includes('esley') && label.includes('Meta')) metaContWes = num(val);
+  for (let i=0; i<Math.min(rows.length,20); i++) {
+    const l=(rows[i][0]||'').trim(), v=rows[i][1]||'';
+    if (l.includes('Mês')||l.includes('Período')) mes=v;
+    else if (l.includes('Meta Receita')&&l.includes('cius')) metaRecVin=num(v);
+    else if (l.includes('Meta Receita')&&l.includes('esley')) metaRecWes=num(v);
+    else if (l.includes('Reuniões')&&l.includes('cius')&&l.includes('Meta')) metaReuVin=num(v);
+    else if (l.includes('Reuniões')&&l.includes('esley')&&l.includes('Meta')) metaReuWes=num(v);
+    else if (l.includes('Propostas')&&l.includes('cius')&&l.includes('Meta')) metaPropVin=num(v);
+    else if (l.includes('Propostas')&&l.includes('esley')&&l.includes('Meta')) metaPropWes=num(v);
+    else if (l.includes('Contratos')&&l.includes('cius')&&l.includes('Meta')) metaContVin=num(v);
+    else if (l.includes('Contratos')&&l.includes('esley')&&l.includes('Meta')) metaContWes=num(v);
+    else if (l.includes('Mínima')&&l.includes('BDR')) bdrMin=num(v);
+    else if (l.includes('Meta BDR')) bdrMeta=num(v);
+    else if (l.includes('Objetivo')&&l.includes('BDR')) bdrObj=num(v);
   }
 
-  // Find Vinícius data section
-  const vinHeaderIdx = findRowStartingWith(rows, 'VINÍCIUS');
-  const vinData = [];
-  if (vinHeaderIdx >= 0) {
-    // Skip header row (VINÍCIUS...) and column header row (Data, Receita...)
-    for (let i = vinHeaderIdx + 2; i < rows.length; i++) {
-      if (!isDateCell(rows[i][0])) break; // Stop when no more dates
-      const r = rows[i];
-      vinData.push({
-        date: r[0].trim(),
-        receita: num(r[1]),
-        reu_bdr: num(r[2]),
-        reu_realizadas: num(r[3]),
-        reu_gabi: num(r[4]),
-        reu_proprias: num(r[5]),
-        indicacoes: num(r[6]),
-        de_reunioes: num(r[7]),
-        propostas: num(r[8]),
-        contratos: num(r[9]),
-      });
+  // Closers - both have same structure: Date|Receita|Reun.BDR|Reun.Realizadas|Reun.Próprias|Indicações|Propostas|Contratos
+  function readCloser(keyword) {
+    const idx = findSectionStart(rows, keyword);
+    if (idx < 0) return null;
+    const dataRows = readDateRows(rows, idx+2);
+    return dataRows.map(r => ({
+      date: r[0].trim(), receita: num(r[1]), reu_bdr: num(r[2]), reu_realizadas: num(r[3]),
+      reu_proprias: num(r[4]), indicacoes: num(r[5]), propostas: num(r[6]), contratos: num(r[7]),
+    }));
+  }
+
+  const vinRows = readCloser('VINÍCIUS (CLOSER)') || readCloser('VINICIUS (CLOSER)') || [];
+  const wesRows = readCloser('WESLEY') || [];
+  const labels = vinRows.map(d => d.date);
+
+  // BDRs
+  const bdrNames = ['ROMMEL', 'VINÍCIUS (BDR)', 'GABRIEL', 'NAYRLA'];
+  const bdrs = [];
+  for (const name of bdrNames) {
+    const idx = findSectionStart(rows, 'BDR: ' + name);
+    if (idx < 0) { // try without BDR: prefix
+      const idx2 = findSectionStart(rows, name);
+      if (idx2 < 0) continue;
     }
-  }
-
-  // Find Wesley data section
-  const wesHeaderIdx = findRowStartingWith(rows, 'WESLEY');
-  const wesData = [];
-  if (wesHeaderIdx >= 0) {
-    for (let i = wesHeaderIdx + 2; i < rows.length; i++) {
-      if (!isDateCell(rows[i][0])) break;
-      const r = rows[i];
-      wesData.push({
-        date: r[0].trim(),
-        receita: num(r[1]),
-        reu_bdr: num(r[2]),
-        reu_realizadas: num(r[3]),
-        reu_proprias: num(r[4]),
-        lista: num(r[5]),
-        indicacoes: num(r[6]),
-        propostas: num(r[7]),
-        contratos: num(r[8]),
-      });
-    }
-  }
-
-  const labels = vinData.map(d => d.date);
-
-  return {
-    mes, labels,
-    vin: {
-      meta_receita: metaRecVin, meta_reunioes: metaReuVin,
-      meta_propostas: metaPropVin, meta_contratos: metaContVin,
-      receita_diaria: vinData.map(d => d.receita),
-      reu_bdr: vinData.map(d => d.reu_bdr),
-      reu_realizadas: vinData.map(d => d.reu_realizadas),
-      reu_gabi: vinData.map(d => d.reu_gabi),
-      reu_proprias: vinData.map(d => d.reu_proprias),
-      reu_indicacoes: vinData.map(d => d.indicacoes),
-      reu_de_reunioes: vinData.map(d => d.de_reunioes),
-      propostas: vinData.reduce((s, d) => s + d.propostas, 0),
-      contratos: vinData.reduce((s, d) => s + d.contratos, 0),
-      meta_bdr: 24, meta_gabi: 6, meta_proprias: 6, meta_indicacoes: 10, meta_de_reunioes: 14,
-    },
-    wes: {
-      meta_receita: metaRecWes, meta_reunioes: metaReuWes,
-      meta_propostas: metaPropWes, meta_contratos: metaContWes,
-      receita_diaria: wesData.map(d => d.receita),
-      reu_bdr: wesData.map(d => d.reu_bdr),
-      reu_realizadas: wesData.map(d => d.reu_realizadas),
-      reu_proprias: wesData.map(d => d.reu_proprias),
-      reu_lista: wesData.map(d => d.lista),
-      reu_indicacoes: wesData.map(d => d.indicacoes),
-      propostas: wesData.reduce((s, d) => s + d.propostas, 0),
-      contratos: wesData.reduce((s, d) => s + d.contratos, 0),
-      meta_bdr: 24, meta_proprias: 6, meta_lista: 10, meta_indicacoes: 10,
-    },
-  };
-}
-
-// ============================================================
-//  UTILITIES
-// ============================================================
-
-function cumSum(arr) {
-  let s = 0;
-  return arr.map(v => { s += (v || 0); return s; });
-}
-
-function sum(arr) { return arr.reduce((a, b) => a + (b || 0), 0); }
-
-function formatBRL(v) {
-  return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 0 });
-}
-
-function findLastDataDay(arr) {
-  for (let i = arr.length - 1; i >= 0; i--) {
-    if (arr[i] !== 0 && arr[i] !== null && arr[i] !== undefined) return i;
-  }
-  return -1;
-}
-
-function metaLineFn(total, days) {
-  return Array.from({length: days}, (_, i) => Math.round(total * (i) / (days - 1)));
-}
-
-// ============================================================
-//  CHARTS
-// ============================================================
-
-Chart.defaults.color = '#7a7a90';
-Chart.defaults.borderColor = 'rgba(255,255,255,0.05)';
-Chart.defaults.font.family = "'Outfit', sans-serif";
-const gridColor = 'rgba(255,255,255,0.06)';
-
-function makeAccumChart(canvasId, labels, realData, metaTotal, maxY, isCurrency, realizadasData) {
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  const days = labels.length;
-  const cumReal = cumSum(realData);
-  const cumMeta = metaLineFn(metaTotal, days);
-  
-  // Today's index based on actual date
-  const todayIdx = getTodayIndex(labels);
-  
-  // Last day with actual data (revenue or reunions entered)
-  const lastDataDay = findLastDataDay(realData);
-
-  // Real line: show up to today (including zeros — the line stays flat on zero days)
-  const realLine = cumReal.map((v, i) => i <= todayIdx ? v : null);
-
-  // Meta line: advances automatically based on today's date
-  const metaLine2 = cumMeta.map((v, i) => i <= todayIdx ? v : null);
-
-  // Meta final dot: always visible at the last day
-  const metaFinalDot = cumMeta.map((v, i) => i === days - 1 ? metaTotal : null);
-
-  const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.parentElement.clientHeight || 300);
-  gradient.addColorStop(0, 'rgba(59, 130, 246, 0.25)');
-  gradient.addColorStop(1, 'rgba(59, 130, 246, 0)');
-
-  const datasets = [
-    {
-      label: 'Agendadas',
-      data: realLine,
-      borderColor: '#3b82f6',
-      backgroundColor: gradient,
-      borderWidth: 3.5,
-      fill: true,
-      tension: 0.4,
-      pointBackgroundColor: '#3b82f6',
-      pointBorderColor: '#0a0a0f',
-      pointBorderWidth: 2,
-      pointRadius: function(ctx) {
-        if (ctx.dataIndex === todayIdx) return 7;
-        if (ctx.dataIndex <= todayIdx) return 3;
-        return 0;
-      },
-      pointHoverRadius: 8,
-      spanGaps: false,
-    },
-    {
-      label: 'Meta',
-      data: metaLine2,
-      borderColor: 'rgba(239, 68, 68, 0.6)',
-      borderWidth: 2,
-      borderDash: [8, 4],
-      fill: false,
-      tension: 0,
-      pointRadius: 0,
-      pointHoverRadius: 0,
-      spanGaps: false,
-    },
-    {
-      label: 'Meta Final',
-      data: metaFinalDot,
-      borderColor: 'transparent',
-      backgroundColor: 'rgba(239, 68, 68, 0.8)',
-      borderWidth: 0,
-      fill: false,
-      pointRadius: 8,
-      pointHoverRadius: 10,
-      pointStyle: 'circle',
-      pointBorderColor: 'rgba(239, 68, 68, 0.3)',
-      pointBorderWidth: 3,
-      showLine: false,
-    }
-  ];
-
-  // Add Realizadas line (purple) if data is provided
-  if (realizadasData) {
-    const cumRealizadas = cumSum(realizadasData);
-    const realizadasLine = cumRealizadas.map((v, i) => i <= todayIdx ? v : null);
-    
-    datasets.splice(1, 0, {
-      label: 'Realizadas',
-      data: realizadasLine,
-      borderColor: '#a855f7',
-      backgroundColor: 'transparent',
-      borderWidth: 3,
-      fill: false,
-      tension: 0.4,
-      pointBackgroundColor: '#a855f7',
-      pointBorderColor: '#0a0a0f',
-      pointBorderWidth: 2,
-      pointRadius: function(ctx) {
-        if (ctx.dataIndex === todayIdx) return 6;
-        if (ctx.dataIndex <= todayIdx) return 2;
-        return 0;
-      },
-      pointHoverRadius: 7,
-      spanGaps: false,
+    const searchIdx = findSectionStart(rows, name);
+    if (searchIdx < 0) continue;
+    const dataRows = readDateRows(rows, searchIdx+2);
+    bdrs.push({
+      name: name,
+      color: BDR_COLORS[name] || '#888',
+      data: dataRows.map(r => ({
+        date: r[0].trim(), agendamentos: num(r[1]), realizadas: num(r[2]), noshow: num(r[3]),
+      })),
     });
   }
 
-  // Update first dataset label for non-currency (reunions) charts
-  if (!isCurrency) {
-    datasets[0].label = 'Agendadas';
-  } else {
-    datasets[0].label = 'Realizado';
+  const makeCloserObj = (rows, metaRec, metaReu, metaProp, metaCont) => ({
+    meta_receita: metaRec, meta_reunioes: metaReu, meta_propostas: metaProp, meta_contratos: metaCont,
+    receita_diaria: rows.map(d=>d.receita), reu_bdr: rows.map(d=>d.reu_bdr),
+    reu_realizadas: rows.map(d=>d.reu_realizadas), reu_proprias: rows.map(d=>d.reu_proprias),
+    reu_indicacoes: rows.map(d=>d.indicacoes),
+    propostas: rows.reduce((s,d)=>s+d.propostas,0), contratos: rows.reduce((s,d)=>s+d.contratos,0),
+    meta_bdr: 0, meta_proprias: 0, meta_indicacoes: 0,
+  });
+
+  return {
+    mes, labels, bdrs, bdrMin, bdrMeta, bdrObj,
+    vin: makeCloserObj(vinRows, metaRecVin, metaReuVin, metaPropVin, metaContVin),
+    wes: makeCloserObj(wesRows, metaRecWes, metaReuWes, metaPropWes, metaContWes),
+  };
+}
+
+// Utilities
+function cumSum(a){let s=0;return a.map(v=>{s+=(v||0);return s})}
+function sum(a){return a.reduce((s,v)=>s+(v||0),0)}
+function formatBRL(v){return 'R$ '+v.toLocaleString('pt-BR',{minimumFractionDigits:0})}
+function findLastDataDay(a){for(let i=a.length-1;i>=0;i--)if(a[i])return i;return -1}
+function metaLineFn(t,d){return Array.from({length:d},(_,i)=>Math.round(t*i/(d-1)))}
+
+// Chart defaults
+Chart.defaults.color='#7a7a90';Chart.defaults.borderColor='rgba(255,255,255,0.05)';Chart.defaults.font.family="'Outfit',sans-serif";
+const gridColor='rgba(255,255,255,0.06)';
+
+function makeAccumChart(canvasId,labels,realData,metaTotal,maxY,isCurrency,realizadasData){
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const days=labels.length,cumReal=cumSum(realData),cumMeta=metaLineFn(metaTotal,days);
+  const todayIdx=getTodayIndex(labels);
+  const realLine=cumReal.map((v,i)=>i<=todayIdx?v:null);
+  const metaLine2=cumMeta.map((v,i)=>i<=todayIdx?v:null);
+  const metaFinalDot=cumMeta.map((v,i)=>i===days-1?metaTotal:null);
+  const grad=ctx.createLinearGradient(0,0,0,ctx.canvas.parentElement.clientHeight||300);
+  grad.addColorStop(0,'rgba(59,130,246,0.25)');grad.addColorStop(1,'rgba(59,130,246,0)');
+
+  const ds=[
+    {label:isCurrency?'Realizado':'Agendadas',data:realLine,borderColor:'#3b82f6',backgroundColor:grad,borderWidth:3.5,fill:true,tension:.4,pointBackgroundColor:'#3b82f6',pointBorderColor:'#0a0a0f',pointBorderWidth:2,pointRadius:c=>c.dataIndex===todayIdx?7:c.dataIndex<=todayIdx?3:0,pointHoverRadius:8,spanGaps:false},
+    {label:'Meta',data:metaLine2,borderColor:'rgba(239,68,68,0.6)',borderWidth:2,borderDash:[8,4],fill:false,tension:0,pointRadius:0,pointHoverRadius:0,spanGaps:false},
+    {label:'Meta Final',data:metaFinalDot,borderColor:'transparent',backgroundColor:'rgba(239,68,68,0.8)',borderWidth:0,fill:false,pointRadius:8,pointHoverRadius:10,pointStyle:'circle',pointBorderColor:'rgba(239,68,68,0.3)',pointBorderWidth:3,showLine:false}
+  ];
+
+  if(realizadasData){
+    const cumR=cumSum(realizadasData);
+    ds.splice(1,0,{label:'Realizadas',data:cumR.map((v,i)=>i<=todayIdx?v:null),borderColor:'#a855f7',backgroundColor:'transparent',borderWidth:3,fill:false,tension:.4,pointBackgroundColor:'#a855f7',pointBorderColor:'#0a0a0f',pointBorderWidth:2,pointRadius:c=>c.dataIndex===todayIdx?6:c.dataIndex<=todayIdx?2:0,pointHoverRadius:7,spanGaps:false});
   }
 
-  const chart = new Chart(ctx, {
-    type: 'line',
-    data: { labels: labels, datasets: datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { intersect: false, mode: 'index' },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a1a28',
-          borderColor: '#2a2a3a',
-          borderWidth: 1,
-          titleFont: { weight: '700' },
-          callbacks: {
-            label: function(ctx) {
-              const v = ctx.parsed.y;
-              if (v === null) return '';
-              return ctx.dataset.label + ': ' + (isCurrency ? formatBRL(v) : v);
-            }
-          }
-        }
-      },
-      scales: {
-        y: {
-          min: 0,
-          max: maxY,
-          grid: { color: gridColor },
-          ticks: {
-            callback: v => isCurrency ? (v >= 1000 ? (v/1000) + 'K' : v) : v,
-            font: { family: "'JetBrains Mono', monospace", size: 11 }
-          }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { font: { family: "'JetBrains Mono', monospace", size: 11 } }
-        }
-      }
-    }
-  });
+  const chart=new Chart(ctx,{type:'line',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a28',borderColor:'#2a2a3a',borderWidth:1,callbacks:{label:c=>{const v=c.parsed.y;if(v===null)return'';return c.dataset.label+': '+(isCurrency?formatBRL(v):v)}}}},scales:{y:{min:0,max:maxY,grid:{color:gridColor},ticks:{callback:v=>isCurrency?(v>=1000?(v/1000)+'K':v):v,font:{family:"'JetBrains Mono',monospace",size:11}}},x:{grid:{display:false},ticks:{font:{family:"'JetBrains Mono',monospace",size:11}}}}}});
   chartInstances.push(chart);
 }
 
-function makeDailyBars(canvasId, labels, dailyData) {
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  const todayIdx = getTodayIndex(labels);
-  const colors = dailyData.map((v, i) => i <= todayIdx ? 'rgba(59, 130, 246, 0.8)' : 'rgba(59, 130, 246, 0.15)');
-
-  const chart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: dailyData,
-        backgroundColor: colors,
-        borderRadius: 6,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1a1a28',
-          callbacks: { label: ctx => formatBRL(ctx.parsed.y) }
-        }
-      },
-      scales: {
-        y: {
-          grid: { color: gridColor },
-          ticks: {
-            callback: v => v >= 1000 ? (v/1000)+'K' : v,
-            font: { family: "'JetBrains Mono', monospace", size: 10 }
-          }
-        },
-        x: { grid: { display: false }, ticks: { font: { size: 10 } } }
-      }
-    }
-  });
+function makeDailyBars(canvasId,labels,dailyData){
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const todayIdx=getTodayIndex(labels);
+  const colors=dailyData.map((v,i)=>i<=todayIdx?'rgba(59,130,246,0.8)':'rgba(59,130,246,0.15)');
+  const chart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{data:dailyData,backgroundColor:colors,borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a1a28',callbacks:{label:c=>formatBRL(c.parsed.y)}}},scales:{y:{grid:{color:gridColor},ticks:{callback:v=>v>=1000?(v/1000)+'K':v,font:{family:"'JetBrains Mono',monospace",size:10}}},x:{grid:{display:false},ticks:{font:{size:10}}}}}});
   chartInstances.push(chart);
 }
 
-function makeFonteTable(containerId, sources) {
-  let html = '<table class="fonte-table"><thead><tr><th>Fonte</th><th>Real</th><th>Meta</th><th>Progresso</th></tr></thead><tbody>';
-  sources.forEach(s => {
-    const pct = s.meta > 0 ? Math.round((s.real / s.meta) * 100) : 0;
-    const barColor = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--amber)' : 'var(--red)';
-    html += `<tr>
-      <td style="color:${s.color}">${s.name}</td>
-      <td>${s.real}</td>
-      <td style="color:var(--text-dim)">${s.meta}</td>
-      <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div><div class="bar-label">${pct}%</div></div></td>
-    </tr>`;
+function makeBdrChart(canvasId,labels,bdrs,bdrMeta,bdrObj){
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const todayIdx=getTodayIndex(labels);
+  const days=labels.length;
+  const metaLine=metaLineFn(bdrMeta,days).map((v,i)=>i<=todayIdx?v:null);
+  const objLine=metaLineFn(bdrObj,days).map((v,i)=>i<=todayIdx?v:null);
+  const metaFinal=Array(days).fill(null);metaFinal[days-1]=bdrMeta;
+  const objFinal=Array(days).fill(null);objFinal[days-1]=bdrObj;
+
+  const ds=bdrs.map(b=>{
+    const cum=cumSum(b.data.map(d=>d.agendamentos));
+    return{label:b.name,data:cum.map((v,i)=>i<=todayIdx?v:null),borderColor:b.color,borderWidth:3,fill:false,tension:.4,pointRadius:c=>c.dataIndex===todayIdx?6:2,pointBackgroundColor:b.color,pointBorderColor:'#0a0a0f',pointBorderWidth:1,spanGaps:false};
   });
-  html += '</tbody></table>';
-  document.getElementById(containerId).innerHTML = html;
+
+  ds.push({label:'Meta (70)',data:metaLine,borderColor:'rgba(239,68,68,0.4)',borderWidth:1.5,borderDash:[6,3],fill:false,tension:0,pointRadius:0,spanGaps:false});
+  ds.push({label:'Objetivo (110)',data:objLine,borderColor:'rgba(34,197,94,0.4)',borderWidth:1.5,borderDash:[6,3],fill:false,tension:0,pointRadius:0,spanGaps:false});
+  ds.push({label:'Meta Final',data:metaFinal,borderColor:'transparent',backgroundColor:'rgba(239,68,68,0.7)',pointRadius:6,pointBorderColor:'rgba(239,68,68,0.3)',pointBorderWidth:2,showLine:false,fill:false});
+  ds.push({label:'Obj Final',data:objFinal,borderColor:'transparent',backgroundColor:'rgba(34,197,94,0.7)',pointRadius:6,pointBorderColor:'rgba(34,197,94,0.3)',pointBorderWidth:2,showLine:false,fill:false});
+
+  const chart=new Chart(ctx,{type:'line',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:true,position:'bottom',labels:{usePointStyle:true,pointStyle:'circle',padding:12,font:{size:11},filter:item=>!item.text.includes('Final')}},tooltip:{backgroundColor:'#1a1a28',borderColor:'#2a2a3a',borderWidth:1}},scales:{y:{min:0,grid:{color:gridColor},ticks:{font:{family:"'JetBrains Mono',monospace",size:10}}},x:{grid:{display:false},ticks:{font:{family:"'JetBrains Mono',monospace",size:10}}}}}});
+  chartInstances.push(chart);
 }
 
-function makePipeline(containerId, data) {
-  const stages = [
-    { name: 'Reuniões', real: data.reu_real, meta: data.reu_meta, color: 'var(--blue)' },
-    { name: 'Propostas', real: data.prop_real, meta: data.prop_meta, color: 'var(--amber)' },
-    { name: 'Contratos', real: data.cont_real, meta: data.cont_meta, color: 'var(--green)' },
-  ];
-  let html = '<table class="fonte-table"><thead><tr><th>Etapa</th><th>Real</th><th>Meta</th><th>Progresso</th></tr></thead><tbody>';
-  stages.forEach(s => {
-    const pct = s.meta > 0 ? Math.round((s.real / s.meta) * 100) : 0;
-    const barColor = pct >= 80 ? 'var(--green)' : pct >= 40 ? 'var(--amber)' : 'var(--red)';
-    html += `<tr>
-      <td style="color:${s.color};font-weight:600">${s.name}</td>
-      <td>${s.real}</td>
-      <td style="color:var(--text-dim)">${s.meta}</td>
+function makeFonteTable(id,sources){
+  let h='<table class="fonte-table"><thead><tr><th>Fonte</th><th>Real</th><th>Meta</th><th>Progresso</th></tr></thead><tbody>';
+  sources.forEach(s=>{const p=s.meta>0?Math.round(s.real/s.meta*100):0;const c=p>=80?'var(--green)':p>=40?'var(--amber)':'var(--red)';h+=`<tr><td style="color:${s.color}">${s.name}</td><td>${s.real}</td><td style="color:var(--text-dim)">${s.meta}</td><td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(p,100)}%;background:${c}"></div><div class="bar-label">${p}%</div></div></td></tr>`});
+  h+='</tbody></table>';document.getElementById(id).innerHTML=h;
+}
+
+function makePipeline(id,data){
+  const stages=[{name:'Reuniões',real:data.reu_real,meta:data.reu_meta,color:'var(--blue)'},{name:'Propostas',real:data.prop_real,meta:data.prop_meta,color:'var(--amber)'},{name:'Contratos',real:data.cont_real,meta:data.cont_meta,color:'var(--green)'}];
+  let h='<table class="fonte-table"><thead><tr><th>Etapa</th><th>Real</th><th>Meta</th><th>Progresso</th></tr></thead><tbody>';
+  stages.forEach(s=>{const p=s.meta>0?Math.round(s.real/s.meta*100):0;const c=p>=80?'var(--green)':p>=40?'var(--amber)':'var(--red)';h+=`<tr><td style="color:${s.color};font-weight:600">${s.name}</td><td>${s.real}</td><td style="color:var(--text-dim)">${s.meta}</td><td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(p,100)}%;background:${c}"></div><div class="bar-label">${p}%</div></div></td></tr>`});
+  h+='</tbody></table>';document.getElementById(id).innerHTML=h;
+}
+
+function makeLeaderboard(id,bdrs,bdrMin,bdrMeta,bdrObj){
+  const ranked=bdrs.map(b=>{
+    const totalAg=sum(b.data.map(d=>d.agendamentos));
+    const totalReal=sum(b.data.map(d=>d.realizadas));
+    const totalNS=sum(b.data.map(d=>d.noshow));
+    const nsRate=totalAg>0?Math.round(totalNS/totalAg*100):0;
+    return{name:b.name,color:b.color,ag:totalAg,real:totalReal,ns:totalNS,nsRate};
+  }).sort((a,b)=>b.ag-a.ag);
+
+  let h='<div class="leaderboard">';
+  h+='<table class="fonte-table"><thead><tr><th>#</th><th>BDR</th><th>Agend.</th><th>Realiz.</th><th>No-Show</th><th>Taxa NS</th><th>Progresso (meta '+bdrMeta+')</th></tr></thead><tbody>';
+  ranked.forEach((r,i)=>{
+    const pct=bdrMeta>0?Math.round(r.ag/bdrMeta*100):0;
+    let barColor='var(--red)';
+    if(r.ag>=bdrObj) barColor='var(--cyan)';
+    else if(r.ag>=bdrMeta) barColor='var(--green)';
+    else if(r.ag>=bdrMin) barColor='var(--amber)';
+    const nsColor=r.nsRate>30?'var(--red)':r.nsRate>15?'var(--amber)':'var(--green)';
+    h+=`<tr>
+      <td style="font-weight:800;color:${i===0?'var(--amber)':'var(--text-dim)'}">${i+1}º</td>
+      <td style="color:${r.color};font-weight:600">${r.name}</td>
+      <td>${r.ag}</td><td>${r.real}</td><td>${r.ns}</td>
+      <td style="color:${nsColor};font-weight:700">${r.nsRate}%</td>
       <td class="bar-cell"><div class="bar-bg"><div class="bar-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div><div class="bar-label">${pct}%</div></div></td>
     </tr>`;
   });
-  html += '</tbody></table>';
-  document.getElementById(containerId).innerHTML = html;
+  h+='</tbody></table></div>';
+  document.getElementById(id).innerHTML=h;
+}
+
+function makeBdrKpis(id,bdrs,bdrMeta){
+  let h='';
+  bdrs.forEach(b=>{
+    const total=sum(b.data.map(d=>d.agendamentos));
+    const pct=bdrMeta>0?Math.round(total/bdrMeta*100):0;
+    const colorClass=pct>=100?'green':pct>=70?'amber':'red';
+    h+=`<div class="bdr-kpi"><div class="bdr-name" style="color:${b.color}">${b.name}</div><div class="bdr-val" style="color:var(--${colorClass})">${total}</div><div class="bdr-sub">${pct}% da meta</div></div>`;
+  });
+  document.getElementById(id).innerHTML=h;
+}
+
+function makeBdrDetailCharts(containerId,bdrs,labels){
+  const container=document.getElementById(containerId);
+  container.innerHTML='';
+  bdrs.forEach(b=>{
+    const card=document.createElement('div');card.className='detail-card';
+    card.innerHTML=`<div class="chart-title"><span class="name">${b.name}</span><span class="type" style="color:${b.color}">· Agend. vs Realizadas vs No-Show</span></div><div class="detail-chart-body"><canvas id="chart-bdr-${b.name.replace(/[^a-zA-Z]/g,'')}"></canvas></div>`;
+    container.appendChild(card);
+  });
+
+  bdrs.forEach(b=>{
+    const canvasId='chart-bdr-'+b.name.replace(/[^a-zA-Z]/g,'');
+    const ctx=document.getElementById(canvasId).getContext('2d');
+    const todayIdx=getTodayIndex(labels);
+    const ag=b.data.map(d=>d.agendamentos);
+    const re=b.data.map(d=>d.realizadas);
+    const ns=b.data.map(d=>d.noshow);
+
+    const chart=new Chart(ctx,{type:'bar',data:{labels,datasets:[
+      {label:'Agendamentos',data:ag.map((v,i)=>i<=todayIdx?v:null),backgroundColor:'rgba(59,130,246,0.7)',borderRadius:4,borderSkipped:false},
+      {label:'Realizadas',data:re.map((v,i)=>i<=todayIdx?v:null),backgroundColor:'rgba(34,197,94,0.7)',borderRadius:4,borderSkipped:false},
+      {label:'No-Show',data:ns.map((v,i)=>i<=todayIdx?v:null),backgroundColor:'rgba(239,68,68,0.7)',borderRadius:4,borderSkipped:false},
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{usePointStyle:true,padding:8,font:{size:10}}}},scales:{y:{grid:{color:gridColor},ticks:{font:{size:9}}},x:{grid:{display:false},ticks:{font:{size:8}}}}}});
+    chartInstances.push(chart);
+  });
 }
 
 // ============================================================
 //  RENDER
 // ============================================================
-
-function renderAll(data) {
+function renderAll(data){
   destroyCharts();
 
-  // Header
-  document.getElementById('mes-label').textContent = data.mes;
-  document.getElementById('updated-label').textContent = new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('mes-label').textContent=data.mes;
+  document.getElementById('updated-label').textContent=new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+  const todayIdx=getTodayIndex(data.labels);
+  document.getElementById('dias-label').textContent=data.labels.length-todayIdx;
 
-  // Days remaining
-  const todayIdx = getTodayIndex(data.labels);
-  const daysRemaining = data.labels.length - todayIdx;
-  document.getElementById('dias-label').textContent = daysRemaining;
+  // Closer KPIs
+  const vinT=sum(data.vin.receita_diaria),wesT=sum(data.wes.receita_diaria);
+  document.getElementById('kpi-vin-meta').textContent=formatBRL(data.vin.meta_receita);
+  document.getElementById('kpi-vin-real').textContent=formatBRL(vinT);
+  const vp=data.vin.meta_receita>0?Math.round(vinT/data.vin.meta_receita*100):0;
+  document.getElementById('kpi-vin-pct').innerHTML=`<span class="${vp>=50?'pct-up':'pct-down'}">${vp}% da meta</span>`;
+  document.getElementById('kpi-wes-meta').textContent=formatBRL(data.wes.meta_receita);
+  document.getElementById('kpi-wes-real').textContent=formatBRL(wesT);
+  const wp=data.wes.meta_receita>0?Math.round(wesT/data.wes.meta_receita*100):0;
+  document.getElementById('kpi-wes-pct').innerHTML=`<span class="${wp>=50?'pct-up':'pct-down'}">${wp}% da meta</span>`;
 
-  // KPIs
-  const vinTotal = sum(data.vin.receita_diaria);
-  const wesTotal = sum(data.wes.receita_diaria);
+  // Closer reunion totals
+  const vinReu=data.labels.map((_,i)=>(data.vin.reu_bdr[i]||0)+(data.vin.reu_proprias[i]||0)+(data.vin.reu_indicacoes[i]||0));
+  const wesReu=data.labels.map((_,i)=>(data.wes.reu_bdr[i]||0)+(data.wes.reu_proprias[i]||0)+(data.wes.reu_indicacoes[i]||0));
 
-  document.getElementById('kpi-vin-meta').textContent = formatBRL(data.vin.meta_receita);
-  document.getElementById('kpi-vin-real').textContent = formatBRL(vinTotal);
-  const vinPct = data.vin.meta_receita > 0 ? Math.round((vinTotal / data.vin.meta_receita) * 100) : 0;
-  document.getElementById('kpi-vin-pct').innerHTML = `<span class="${vinPct >= 50 ? 'pct-up' : 'pct-down'}">${vinPct}% da meta</span>`;
+  // Closer charts
+  makeAccumChart('chart-vin-rev',data.labels,data.vin.receita_diaria,data.vin.meta_receita,200000,true);
+  makeAccumChart('chart-wes-rev',data.labels,data.wes.receita_diaria,data.wes.meta_receita,150000,true);
+  makeAccumChart('chart-vin-reu',data.labels,vinReu,data.vin.meta_reunioes,120,false,data.vin.reu_realizadas);
+  makeAccumChart('chart-wes-reu',data.labels,wesReu,data.wes.meta_reunioes,90,false,data.wes.reu_realizadas);
 
-  document.getElementById('kpi-wes-meta').textContent = formatBRL(data.wes.meta_receita);
-  document.getElementById('kpi-wes-real').textContent = formatBRL(wesTotal);
-  const wesPct = data.wes.meta_receita > 0 ? Math.round((wesTotal / data.wes.meta_receita) * 100) : 0;
-  document.getElementById('kpi-wes-pct').innerHTML = `<span class="${wesPct >= 50 ? 'pct-up' : 'pct-down'}">${wesPct}% da meta</span>`;
+  makeDailyBars('chart-vin-rev-daily',data.labels,data.vin.receita_diaria);
+  makeDailyBars('chart-wes-rev-daily',data.labels,data.wes.receita_diaria);
 
-  // Reuniões totais por dia
-  const vinReuDiaria = data.labels.map((_, i) =>
-    (data.vin.reu_bdr[i]||0) + (data.vin.reu_gabi[i]||0) + (data.vin.reu_proprias[i]||0) +
-    (data.vin.reu_indicacoes[i]||0) + (data.vin.reu_de_reunioes[i]||0)
-  );
-  const wesReuDiaria = data.labels.map((_, i) =>
-    (data.wes.reu_bdr[i]||0) + (data.wes.reu_proprias[i]||0) +
-    (data.wes.reu_lista[i]||0) + (data.wes.reu_indicacoes[i]||0)
-  );
-
-  // Main charts
-  makeAccumChart('chart-vin-rev', data.labels, data.vin.receita_diaria, data.vin.meta_receita, 100000, true);
-  makeAccumChart('chart-wes-rev', data.labels, data.wes.receita_diaria, data.wes.meta_receita, 100000, true);
-  makeAccumChart('chart-vin-reu', data.labels, vinReuDiaria, data.vin.meta_reunioes, 70, false, data.vin.reu_realizadas);
-  makeAccumChart('chart-wes-reu', data.labels, wesReuDiaria, data.wes.meta_reunioes, 70, false, data.wes.reu_realizadas);
-
-  // Daily bars
-  makeDailyBars('chart-vin-rev-daily', data.labels, data.vin.receita_diaria);
-  makeDailyBars('chart-wes-rev-daily', data.labels, data.wes.receita_diaria);
-
-  // Fonte tables
-  makeFonteTable('vin-fonte-table', [
-    { name: 'BDRs', real: sum(data.vin.reu_bdr), meta: data.vin.meta_bdr, color: 'var(--blue)' },
-    { name: 'Gabi', real: sum(data.vin.reu_gabi), meta: data.vin.meta_gabi, color: 'var(--green)' },
-    { name: 'Próprias', real: sum(data.vin.reu_proprias), meta: data.vin.meta_proprias, color: 'var(--amber)' },
-    { name: 'Indicações', real: sum(data.vin.reu_indicacoes), meta: data.vin.meta_indicacoes, color: 'var(--purple)' },
-    { name: 'De Reuniões', real: sum(data.vin.reu_de_reunioes), meta: data.vin.meta_de_reunioes, color: 'var(--cyan)' },
+  // Closer fonte tables
+  makeFonteTable('vin-fonte-table',[
+    {name:'BDRs',real:sum(data.vin.reu_bdr),meta:data.vin.meta_bdr,color:'var(--blue)'},
+    {name:'Próprias',real:sum(data.vin.reu_proprias),meta:data.vin.meta_proprias,color:'var(--amber)'},
+    {name:'Indicações',real:sum(data.vin.reu_indicacoes),meta:data.vin.meta_indicacoes,color:'var(--purple)'},
+  ]);
+  makeFonteTable('wes-fonte-table',[
+    {name:'BDRs',real:sum(data.wes.reu_bdr),meta:data.wes.meta_bdr,color:'var(--blue)'},
+    {name:'Próprias',real:sum(data.wes.reu_proprias),meta:data.wes.meta_proprias,color:'var(--amber)'},
+    {name:'Indicações',real:sum(data.wes.reu_indicacoes),meta:data.wes.meta_indicacoes,color:'var(--purple)'},
   ]);
 
-  makeFonteTable('wes-fonte-table', [
-    { name: 'BDRs', real: sum(data.wes.reu_bdr), meta: data.wes.meta_bdr, color: 'var(--blue)' },
-    { name: 'Próprias', real: sum(data.wes.reu_proprias), meta: data.wes.meta_proprias, color: 'var(--amber)' },
-    { name: 'Lista Contatos', real: sum(data.wes.reu_lista), meta: data.wes.meta_lista, color: 'var(--orange)' },
-    { name: 'Indicações', real: sum(data.wes.reu_indicacoes), meta: data.wes.meta_indicacoes, color: 'var(--purple)' },
-  ]);
+  makePipeline('vin-pipeline',{reu_real:sum(vinReu),reu_meta:data.vin.meta_reunioes,prop_real:data.vin.propostas,prop_meta:data.vin.meta_propostas,cont_real:data.vin.contratos,cont_meta:data.vin.meta_contratos});
+  makePipeline('wes-pipeline',{reu_real:sum(wesReu),reu_meta:data.wes.meta_reunioes,prop_real:data.wes.propostas,prop_meta:data.wes.meta_propostas,cont_real:data.wes.contratos,cont_meta:data.wes.meta_contratos});
 
-  // Pipeline
-  makePipeline('vin-pipeline', {
-    reu_real: sum(vinReuDiaria), reu_meta: data.vin.meta_reunioes,
-    prop_real: data.vin.propostas, prop_meta: data.vin.meta_propostas,
-    cont_real: data.vin.contratos, cont_meta: data.vin.meta_contratos,
-  });
-
-  makePipeline('wes-pipeline', {
-    reu_real: sum(wesReuDiaria), reu_meta: data.wes.meta_reunioes,
-    prop_real: data.wes.propostas, prop_meta: data.wes.meta_propostas,
-    cont_real: data.wes.contratos, cont_meta: data.wes.meta_contratos,
-  });
-}
-
-// ============================================================
-//  INIT + AUTO-REFRESH
-// ============================================================
-
-async function loadAndRender() {
-  const rows = await fetchData();
-  if (rows) {
-    const data = extractData(rows);
-    renderAll(data);
+  // BDR section
+  if(data.bdrs.length>0){
+    makeBdrKpis('bdr-kpis',data.bdrs,data.bdrMeta);
+    makeBdrChart('chart-bdr-agend',data.labels,data.bdrs,data.bdrMeta,data.bdrObj);
+    makeLeaderboard('bdr-leaderboard',data.bdrs,data.bdrMin,data.bdrMeta,data.bdrObj);
+    makeBdrDetailCharts('bdr-detail-charts',data.bdrs,data.labels);
   }
 }
 
+async function loadAndRender(){const r=await fetchData();if(r){const d=extractData(r);renderAll(d)}}
 loadAndRender();
-setInterval(loadAndRender, REFRESH_INTERVAL * 1000);
-
+setInterval(loadAndRender,REFRESH_INTERVAL*1000);
 </script>
 </body>
 </html>
