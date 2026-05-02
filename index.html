@@ -276,7 +276,8 @@ function extractData(rows) {
 
   // Closers - both have same structure: Date|Receita|Reun.BDR|Reun.Realizadas|Reun.Próprias|Indicações|Propostas|Contratos
   function readCloser(keyword) {
-    const idx = findSectionStart(rows, keyword);
+    // Search for the section header that contains "PREENCHA" to avoid matching config lines
+    const idx = rows.findIndex(r => r[0] && r[0].trim().toUpperCase().includes(keyword.toUpperCase()) && r[0].trim().toUpperCase().includes('PREENCHA'));
     if (idx < 0) return null;
     const dataRows = readDateRows(rows, idx+2);
     return dataRows.map(r => ({
@@ -293,12 +294,9 @@ function extractData(rows) {
   const bdrNames = ['ROMMEL', 'VINÍCIUS (BDR)', 'GABRIEL', 'NAYRLA'];
   const bdrs = [];
   for (const name of bdrNames) {
-    const idx = findSectionStart(rows, 'BDR: ' + name);
-    if (idx < 0) { // try without BDR: prefix
-      const idx2 = findSectionStart(rows, name);
-      if (idx2 < 0) continue;
-    }
-    const searchIdx = findSectionStart(rows, name);
+    // Always search with "BDR: " prefix first to avoid matching closers
+    let searchIdx = findSectionStart(rows, 'BDR: ' + name);
+    if (searchIdx < 0) searchIdx = findSectionStart(rows, 'BDR:' + name);
     if (searchIdx < 0) continue;
     const dataRows = readDateRows(rows, searchIdx+2);
     bdrs.push({
