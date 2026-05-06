@@ -194,7 +194,7 @@ const BDR_COLORS = {
   'ROMMEL': '#3b82f6',
   'VINÍCIUS (BDR)': '#a855f7',
   'GABRIEL': '#f59e0b',
-  'NAYRLA': '#ec4899',
+  'Petros': '#ec4899',
 };
 
 let chartInstances = [];
@@ -291,7 +291,7 @@ function extractData(rows) {
   const labels = vinRows.map(d => d.date);
 
   // BDRs
-  const bdrNames = ['ROMMEL', 'VINÍCIUS (BDR)', 'GABRIEL', 'NAYRLA'];
+  const bdrNames = ['ROMMEL', 'VINÍCIUS (BDR)', 'GABRIEL', 'Petros'];
   const bdrs = [];
   for (const name of bdrNames) {
     // Always search with "BDR: " prefix first to avoid matching closers
