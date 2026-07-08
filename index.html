@@ -264,8 +264,8 @@ function parseWide(rows,labels,nameField){
   return Object.values(out);
 }
 
-const LBL_BDR=[{label:'VENDAS (R$)',field:'vendas'},{label:'NO-SHOW',field:'ns'},{label:'REALIZ.',field:'re'},{label:'REALIZADAS',field:'re'},{label:'AGEND.',field:'ag'},{label:'AGENDAMENTOS',field:'ag'},{label:'VENDAS',field:'vendas'}];
-const LBL_CLO=[{label:'RECEITA (R$)',field:'receita'},{label:'RECEITA',field:'receita'},{label:'REUN. BDR',field:'rBdr'},{label:'REUNIOES BDR',field:'rBdr'},{label:'REUN. PROPRIAS',field:'rProp'},{label:'REUNIOES PROPRIAS',field:'rProp'},{label:'INDICACOES',field:'rInd'},{label:'PROPOSTAS',field:'prop'},{label:'CONTRATOS',field:'cont'},{label:'REALIZADAS',field:'real'}];
+const LBL_BDR=[{label:'VENDAS (R$)',field:'vendas'},{label:'NO-SHOW',field:'ns'},{label:'QUALIFICADAS',field:'qu'},{label:'QUALIF',field:'qu'},{label:'REALIZ.',field:'re'},{label:'REALIZADAS',field:'re'},{label:'AGEND.',field:'ag'},{label:'AGENDAMENTOS',field:'ag'},{label:'VENDAS',field:'vendas'}];
+const LBL_CLO=[{label:'RECEITA (R$)',field:'receita'},{label:'RECEITA',field:'receita'},{label:'REUN. BDR',field:'rBdr'},{label:'REUNIOES BDR',field:'rBdr'},{label:'REUN. PROPRIAS',field:'rProp'},{label:'REUNIOES PROPRIAS',field:'rProp'},{label:'INDICACOES',field:'rInd'},{label:'PROPOSTAS',field:'prop'},{label:'CONTRATOS',field:'cont'},{label:'QUALIFICADAS',field:'qual'},{label:'QUALIF',field:'qual'},{label:'REALIZADAS',field:'real'}];
 
 async function loadDB(){
   const [eq,bd,cl,de,cf]=await Promise.all([fetchAba(ABAS.equipe),fetchAba(ABAS.bdr),fetchAba(ABAS.closers),fetchAba(ABAS.desafios),fetchAba(ABAS.config)]);
@@ -316,24 +316,24 @@ function computeMonth(){
 
   const bdrData=bdrs.map(b=>{
     const daily=Array(daysIn).fill(0),dailyRe=Array(daysIn).fill(0),dailyNs=Array(daysIn).fill(0);
-    let vendas=0;
+    let vendas=0,qualificadas=0;
     DB.lancB.filter(l=>inMonth(l)&&norm(l.bdr)===norm(b.nome)).forEach(l=>{
-      const d=l.data.getDate()-1;daily[d]+=l.ag;dailyRe[d]+=l.re;dailyNs[d]+=l.ns;vendas+=l.vendas;
+      const d=l.data.getDate()-1;daily[d]+=l.ag;dailyRe[d]+=l.re;dailyNs[d]+=l.ns;vendas+=l.vendas;qualificadas+=(l.qu||0);
     });
     let cum=0;const cumArr=daily.map(v=>cum+=v);
     // streak: dias consecutivos com >=1 agendamento (hoje ainda em 0 nao quebra)
     let streak=0,si=Math.min(todayIdx,daysIn-1);
     if(si>=0&&daily[si]===0)si--;
     for(;si>=0;si--){if(daily[si]>0)streak++;else break;}
-    return {...b,daily,dailyRe,dailyNs,cum:cumArr,total:cum,realizadas:dailyRe.reduce((s,v)=>s+v,0),noshow:dailyNs.reduce((s,v)=>s+v,0),vendas,streak};
+    return {...b,daily,dailyRe,dailyNs,cum:cumArr,total:cum,realizadas:dailyRe.reduce((s,v)=>s+v,0),noshow:dailyNs.reduce((s,v)=>s+v,0),vendas,qualificadas,streak};
   });
 
   const closerData=closers.map(c=>{
-    let receita=0,rBdr=0,rProp=0,rInd=0,real=0,prop=0,cont=0;
+    let receita=0,rBdr=0,rProp=0,rInd=0,real=0,qual=0,prop=0,cont=0;
     DB.lancC.filter(l=>inMonth(l)&&norm(l.closer)===norm(c.nome)).forEach(l=>{
-      receita+=l.receita;rBdr+=l.rBdr;rProp+=l.rProp;rInd+=l.rInd;real+=l.real;prop+=l.prop;cont+=l.cont;
+      receita+=l.receita;rBdr+=l.rBdr;rProp+=l.rProp;rInd+=l.rInd;real+=l.real;qual+=(l.qual||0);prop+=l.prop;cont+=l.cont;
     });
-    return {...c,receita,reunioes:rBdr+rProp+rInd,rBdr,rProp,rInd,real,prop,cont};
+    return {...c,receita,reunioes:rBdr+rProp+rInd,rBdr,rProp,rInd,real,qual,prop,cont};
   });
 
   return {y,m,daysIn,labels,todayIdx,bdrData,closerData};
@@ -419,28 +419,49 @@ function screenDesafio(){
 function screenClosers(M){
   const html=M.closerData.map(c=>{
     const p=c.metaReceita>0?Math.min(100,Math.round(c.receita/c.metaReceita*100)):0;
+    const desq=Math.max(0,c.real-c.qual);
+    const convG=c.real>0?Math.round(c.cont/c.real*100):0;
+    const convQ=c.qual>0?Math.round(c.cont/c.qual*100):0;
     return `<div class="closer-block">
       <div class="closer-top"><div class="closer-name" style="color:${c.cor}">${c.nome}</div>
       <div class="closer-rev" data-count="${Math.round(c.receita)}" data-key="rev-${norm(c.nome)}" data-brl="1">R$ 0</div></div>
       <div class="bar-bg"><div class="bar-fill" style="width:${p}%"></div><div class="bar-txt">${p}% da meta</div></div>
-      <div class="closer-sub"><span>Reuniões <b>${c.reunioes}</b></span><span>Realizadas <b>${c.real}</b></span><span>Propostas <b>${c.prop}</b></span><span>Contratos <b>${c.cont}</b></span></div>
+      <div class="closer-sub"><span>Reuniões <b>${c.reunioes}</b></span><span>Realizadas <b>${c.real}</b></span><span>Qualif. <b style="color:var(--green)">${c.qual}</b></span><span>Desqualif. <b style="color:var(--red)">${desq}</b></span></div>
+      <div class="closer-sub"><span>Propostas <b>${c.prop}</b></span><span>Contratos <b>${c.cont}</b></span><span>Conv. geral <b style="color:var(--cyan)">${convG}%</b></span><span>Conv. qualif. <b style="color:var(--money)">${convQ}%</b></span></div>
     </div>`;}).join('');
-  return {title:'🎯 Closers · receita gerada',sub:'',body:html};
+  return {title:'🎯 Closers · receita gerada',sub:'conv. = contratos / reuniões',body:html};
 }
 
 function screenIndividual(M){
   const html='<div class="ind-grid">'+M.bdrData.map(b=>{
     const nsRate=b.total>0?Math.round(b.noshow/(b.total)*100):0;
+    const quRate=b.realizadas>0?Math.round(b.qualificadas/b.realizadas*100):0;
     const ritmo=M.todayIdx>=0?Math.round(b.total/(M.todayIdx+1)*M.daysIn):0;
     return `<div class="ind-card" style="border-color:${b.cor}44">
       <div class="ind-name" style="color:${b.cor}">${b.nome}</div>
       <div class="ind-stats">
         <div><span class="v">${b.total}</span><span class="l">Agend</span></div>
         <div><span class="v" style="color:var(--green)">${b.realizadas}</span><span class="l">Realiz</span></div>
+        <div><span class="v" style="color:${quRate>=70?'var(--green)':quRate>=50?'var(--amber)':'var(--red)'}">${b.realizadas>0?quRate+'%':'-'}</span><span class="l">Qualif</span></div>
         <div><span class="v" style="color:${nsRate>30?'var(--red)':nsRate>15?'var(--amber)':'var(--green)'}">${nsRate}%</span><span class="l">No-show</span></div>
         <div><span class="v" style="color:var(--cyan)">${ritmo}</span><span class="l">Ritmo/mês</span></div>
       </div></div>`;}).join('')+'</div>';
   return {title:'📊 Números individuais',sub:'ritmo = projeção mantendo o passo atual',body:html};
+}
+
+function screenQualidade(M){
+  const rows=M.bdrData.map(b=>({b,taxa:b.realizadas>0?b.qualificadas/b.realizadas:null}))
+    .sort((a,c)=>(c.taxa??-1)-(a.taxa??-1));
+  const html=rows.map((r,i)=>{
+    const pct=r.taxa==null?null:Math.round(r.taxa*100);
+    const cor=pct==null?'var(--dim)':pct>=70?'var(--green)':pct>=50?'var(--amber)':'var(--red)';
+    return `<div class="money-row">
+      <div class="m-rank">${i+1}º</div>
+      <div class="m-name" style="color:${r.b.cor}">${r.b.nome}</div>
+      <div class="m-next"><b>${r.b.qualificadas}</b> de ${r.b.realizadas} realizadas</div>
+      <div class="m-val" style="color:${cor};min-width:70px;text-align:right">${pct==null?'-':pct+'%'}</div>
+    </div>`;}).join('');
+  return {title:'✅ Qualidade dos agendamentos',sub:'% de reuniões realizadas que eram qualificadas',body:html};
 }
 
 function screenTime(M){
@@ -458,7 +479,7 @@ function screenTime(M){
 }
 
 function buildScreens(M){
-  screens=[screenMoney(M),screenDesafio(),screenClosers(M),screenIndividual(M),screenTime(M)];
+  screens=[screenMoney(M),screenDesafio(),screenClosers(M),screenQualidade(M),screenIndividual(M),screenTime(M)];
   const panel=document.getElementById('rot-panel');
   panel.querySelectorAll('.screen').forEach(e=>e.remove());
   screens.forEach((s,i)=>{
