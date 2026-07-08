@@ -201,16 +201,19 @@ function parseDate(s){
 const monthKey = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
 
 async function fetchAba(nome){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nome)}&t=${Date.now()}`;
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(nome)}&t=${Date.now()}`;
   const r=await fetch(url,{cache:'no-store'});
   if(!r.ok)throw new Error('Falha ao buscar aba '+nome);
-  return parseCSV(await r.text());
+  const txt=await r.text();
+  if(txt.trim().startsWith('<')||txt.includes('"status":"error"'))throw new Error('FORMATO');
+  return parseCSV(txt);
 }
 
 function toObjects(rows){
   if(!rows.length)return[];
-  const head=rows[0].map(norm);
-  return rows.slice(1).map(r=>{const o={};head.forEach((h,i)=>o[h]=r[i]??'');return o;}).filter(o=>Object.values(o).some(v=>v!==''));
+  let head=rows[0].map(norm),start=1;
+  if(head.every(h=>!h)&&rows.length>1){head=rows[1].map(norm);start=2;}
+  return rows.slice(start).map(r=>{const o={};head.forEach((h,i)=>o[h]=r[i]??'');return o;}).filter(o=>Object.values(o).some(v=>v!==''));
 }
 const col=(o,frag)=>{const k=Object.keys(o).find(k=>k.includes(norm(frag)));return k?o[k]:'';};
 
@@ -530,7 +533,14 @@ async function boot(){
     await loadDB();
     fillMonthSelect();
     renderAll();
-  }catch(e){console.error(e);}
+  }catch(e){
+    console.error(e);
+    const el=document.getElementById('alerta');
+    el.style.display='block';
+    el.textContent=e.message==='FORMATO'
+      ? '⚠ A planilha ainda está em formato Excel. Abra ela e use Arquivo > Salvar como Planilha Google, depois atualize o ID no dashboard.'
+      : '⚠ Não consegui ler a planilha. Confira se o compartilhamento está como "qualquer pessoa com o link pode visualizar".';
+  }
 }
 
 document.getElementById('month-select').addEventListener('change',e=>{selectedMonth=e.target.value;userPicked=true;renderAll();});
