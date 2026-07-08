@@ -160,7 +160,7 @@ canvas{width:100%!important;height:100%!important}
    CONFIGURACAO: cole aqui o ID da planilha do Google Sheets
    (parte do link entre /d/ e /edit)
    ============================================================ */
-const SHEET_ID = '1iWdCeNRM-90GbWTI2xeTJ6mVDeJhCs-ntXeeDh7zM1g';
+const SHEET_ID = '1mW5DuYsqO4dPb2g85HvG-XzqjC9FJFHrgX7FMnhoC0A';
 
 /* Nomes das abas (devem bater com a planilha modelo) */
 const ABAS = { equipe:'Equipe', bdr:'Lancamentos BDR', closers:'Lancamentos Closers', desafios:'Desafios', config:'Config' };
@@ -214,11 +214,61 @@ function toObjects(rows){
 }
 const col=(o,frag)=>{const k=Object.keys(o).find(k=>k.includes(norm(frag)));return k?o[k]:'';};
 
+/* Le a grade de lancamentos em qualquer um dos formatos:
+   (a) linha 1 = nomes mesclados, linha 2 = Data + metricas (export bruto)
+   (b) cabecalho unico combinado pelo Google: "ROMMEL Agend.", "ROMMEL No-show"...
+   (c) formato longo antigo: Data | BDR | Agendamentos | ... */
+function parseWide(rows,labels,nameField){
+  if(!rows.length)return[];
+  const findField=h=>{h=norm(h);for(const l of labels){if(h===l.label||h.endsWith(l.label)||h.includes(l.label))return l;}return null;};
+  const nameOf=h=>{h=norm(h);for(const l of labels){if(h.endsWith(l.label))return h.slice(0,h.length-l.label.length).trim();}return null;};
+  const head0=rows[0].map(norm);
+  const isLong=head0.some(h=>h===norm(nameField)||h==='BDR'||h==='CLOSER');
+  const mkRec=(data,nome)=>{const r={data,[nameField]:nome};labels.forEach(l=>r[l.field]=0);return r;};
+  const out={};
+  const add=(dataStr,data,nome,field,val)=>{if(val==null||val==='')return;const k=dataStr+'|'+norm(nome);if(!out[k])out[k]=mkRec(data,nome);out[k][field]+=num(val);};
+
+  if(isLong){ // (c)
+    const nameCol=head0.findIndex(h=>h===norm(nameField)||h==='BDR'||h==='CLOSER');
+    for(let r=1;r<rows.length;r++){
+      const data=parseDate(rows[r][0]);const nome=(rows[r][nameCol]||'').trim();
+      if(!data||!nome)continue;
+      rows[r].forEach((v,c)=>{if(c===0||c===nameCol)return;const l=findField(head0[c]);if(l)add(rows[r][0],data,nome,l.field,v);});
+    }
+    return Object.values(out);
+  }
+
+  const combined=norm(rows[0][0]).includes('DATA'); // (b) se a 1a celula ja e Data
+  let names=[],metrics=[],start;
+  if(combined){
+    metrics=rows[0];
+    names=rows[0].map(h=>nameOf(h)||'');
+    start=1;
+  } else { // (a)
+    let last='';
+    rows[0].forEach((v,i)=>{v=(v||'').trim();if(v)last=v;names[i]=last;});
+    metrics=rows[1]||[];
+    start=2;
+  }
+  for(let r=start;r<rows.length;r++){
+    const data=parseDate(rows[r][0]);if(!data)continue;
+    for(let c=1;c<rows[r].length;c++){
+      const nome=names[c];if(!nome)continue;
+      const l=findField(metrics[c]);if(!l)continue;
+      add(rows[r][0],data,nome,l.field,rows[r][c]);
+    }
+  }
+  return Object.values(out);
+}
+
+const LBL_BDR=[{label:'VENDAS (R$)',field:'vendas'},{label:'NO-SHOW',field:'ns'},{label:'REALIZ.',field:'re'},{label:'REALIZADAS',field:'re'},{label:'AGEND.',field:'ag'},{label:'AGENDAMENTOS',field:'ag'},{label:'VENDAS',field:'vendas'}];
+const LBL_CLO=[{label:'RECEITA (R$)',field:'receita'},{label:'RECEITA',field:'receita'},{label:'REUN. BDR',field:'rBdr'},{label:'REUNIOES BDR',field:'rBdr'},{label:'REUN. PROPRIAS',field:'rProp'},{label:'REUNIOES PROPRIAS',field:'rProp'},{label:'INDICACOES',field:'rInd'},{label:'PROPOSTAS',field:'prop'},{label:'CONTRATOS',field:'cont'},{label:'REALIZADAS',field:'real'}];
+
 async function loadDB(){
   const [eq,bd,cl,de,cf]=await Promise.all([fetchAba(ABAS.equipe),fetchAba(ABAS.bdr),fetchAba(ABAS.closers),fetchAba(ABAS.desafios),fetchAba(ABAS.config)]);
   const equipe=toObjects(eq).map(o=>({nome:col(o,'NOME').trim(),funcao:norm(col(o,'FUNCAO')),cor:col(o,'COR').trim()||'#888',ativo:norm(col(o,'ATIVO'))!=='NAO',metaReceita:num(col(o,'META RECEITA')),metaReunioes:num(col(o,'META REUNIOES'))})).filter(o=>o.nome);
-  const lancB=toObjects(bd).map(o=>({data:parseDate(col(o,'DATA')),bdr:col(o,'BDR').trim(),ag:num(col(o,'AGENDAMENTOS')),re:num(col(o,'REALIZADAS')),ns:num(col(o,'NO-SHOW')||col(o,'NOSHOW')),vendas:num(col(o,'VENDAS'))})).filter(o=>o.data&&o.bdr);
-  const lancC=toObjects(cl).map(o=>({data:parseDate(col(o,'DATA')),closer:col(o,'CLOSER').trim(),receita:num(col(o,'RECEITA')),rBdr:num(col(o,'REUNIOES BDR')),rProp:num(col(o,'PROPRIAS')),rInd:num(col(o,'INDICAC')),real:num(col(o,'REALIZADAS')),prop:num(col(o,'PROPOSTAS')),cont:num(col(o,'CONTRATOS'))})).filter(o=>o.data&&o.closer);
+  const lancB=parseWide(bd,LBL_BDR,'bdr');
+  const lancC=parseWide(cl,LBL_CLO,'closer');
   const desafios=toObjects(de).map(o=>({ini:parseDate(col(o,'INICIO')),fim:parseDate(col(o,'FIM')),texto:col(o,'DESAFIO'),premio:col(o,'PREMIO'),vencedor:col(o,'VENCEDOR').trim()})).filter(o=>o.ini&&o.fim);
   const config={};
   toObjects(cf).forEach(o=>{const k=norm(col(o,'CHAVE'));if(k)config[k]=num(col(o,'VALOR'));});
