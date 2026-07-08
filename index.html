@@ -134,6 +134,7 @@ canvas{width:100%!important;height:100%!important}
     <div class="pulse"></div>
   </div>
 </div>
+<div id="alerta" style="display:none;background:rgba(239,68,68,.12);border-bottom:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:13px;font-weight:600;padding:8px 28px;text-align:center"></div>
 
 <div class="main">
   <div class="left">
@@ -200,7 +201,7 @@ function parseDate(s){
 const monthKey = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
 
 async function fetchAba(nome){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nome)}`;
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(nome)}&t=${Date.now()}`;
   const r=await fetch(url,{cache:'no-store'});
   if(!r.ok)throw new Error('Falha ao buscar aba '+nome);
   return parseCSV(await r.text());
@@ -222,6 +223,21 @@ async function loadDB(){
   const config={};
   toObjects(cf).forEach(o=>{const k=norm(col(o,'CHAVE'));if(k)config[k]=num(col(o,'VALOR'));});
   DB={equipe,lancB,lancC,desafios,config};
+  checkNames();
+}
+
+function checkNames(){
+  const el=document.getElementById('alerta');
+  const bdrNames=new Set(DB.equipe.filter(e=>e.funcao==='BDR'&&e.ativo).map(e=>norm(e.nome)));
+  const clNames=new Set(DB.equipe.filter(e=>e.funcao==='CLOSER'&&e.ativo).map(e=>norm(e.nome)));
+  const orfaos=new Set();
+  DB.lancB.forEach(l=>{if(!bdrNames.has(norm(l.bdr)))orfaos.add(l.bdr);});
+  DB.lancC.forEach(l=>{if(!clNames.has(norm(l.closer)))orfaos.add(l.closer);});
+  const msgs=[];
+  if(bdrNames.size===0)msgs.push('Nenhum BDR ativo na aba Equipe (coluna Funcao deve ser BDR e Ativo SIM)');
+  if(orfaos.size)msgs.push('Lançamentos com nome fora da aba Equipe: '+[...orfaos].join(', '));
+  if(msgs.length){el.style.display='block';el.textContent='⚠ '+msgs.join(' · ');}
+  else el.style.display='none';
 }
 
 function getFaixas(cfg){
