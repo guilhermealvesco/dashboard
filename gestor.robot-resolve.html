@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>RESOLVE GESTOR</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#07070c;--surface:#101018;--surface2:#171724;--border:#23233a;--text:#eef0f6;--dim:#7d7f96;
+--blue:#1A4FE8;--blue2:#3b82f6;--cyan:#06b6d4;--green:#22c55e;--red:#ef4444;--amber:#f59e0b;--purple:#a855f7}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+.header{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;
+padding:14px 20px;border-bottom:1px solid var(--border);background:rgba(7,7,12,.92);backdrop-filter:blur(8px)}
+.logo{font-size:21px;font-weight:900;letter-spacing:-1px;background:linear-gradient(120deg,#5b8cff,var(--cyan));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo span{-webkit-text-fill-color:var(--text);font-weight:300;letter-spacing:3px;font-size:13px;margin-left:6px}
+.upd{font-size:11px;color:var(--dim)}
+.tabs{display:flex;gap:6px;padding:12px 20px 0;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:var(--surface);
+color:var(--dim);font-weight:700;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif}
+.tab.on{background:linear-gradient(120deg,var(--blue),#3b6df0);color:#fff;border-color:transparent}
+.wrap{max-width:1100px;margin:0 auto;padding:16px 20px 60px}
+.pane{display:none}.pane.on{display:block}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-top:14px}
+.card h3{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;font-weight:800}
+.card p{font-size:14px;line-height:1.65;white-space:pre-wrap}
+.sel{width:100%;padding:12px;border-radius:10px;background:var(--surface);border:1px solid var(--border);
+color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;margin-top:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.acao{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:14px;line-height:1.5}
+.acao .n{font-family:'JetBrains Mono',monospace;color:var(--cyan);font-weight:700;min-width:22px}
+.tag{display:inline-block;font-size:11px;padding:3px 10px;border-radius:6px;background:var(--surface2);
+border:1px solid var(--border);color:var(--dim);margin:0 6px 6px 0}
+.met{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.met div{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:11px;color:var(--dim)}
+.met b{display:block;font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--text)}
+.askbox{display:flex;gap:8px;margin-top:14px}
+.askbox input{flex:1;padding:13px 14px;border-radius:10px;background:var(--surface);border:1px solid var(--border);
+color:var(--text);font-family:'Outfit',sans-serif;font-size:14px}
+.askbox button{padding:0 20px;border-radius:10px;border:none;background:linear-gradient(120deg,var(--blue),#3b6df0);
+color:#fff;font-weight:800;font-family:'Outfit',sans-serif;font-size:14px;cursor:pointer}
+.resposta{margin-top:14px;background:var(--surface);border:1px solid var(--border);border-radius:14px;
+padding:18px;font-size:14px;line-height:1.7;white-space:pre-wrap;display:none}
+.sug{font-size:12px;color:var(--dim);margin-top:10px;line-height:1.8}
+.sug span{cursor:pointer;text-decoration:underline;color:var(--cyan)}
+.vazio{color:var(--dim);font-size:14px;padding:30px 10px;text-align:center;line-height:1.7}
+.alerta{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#fca5a5;
+font-size:13px;font-weight:600;padding:10px 16px;border-radius:10px;margin-top:14px}
+.linktv{font-size:12px;color:var(--cyan);text-decoration:none}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo">RESOLVE<span>GESTOR</span></div>
+  <div style="display:flex;gap:14px;align-items:center">
+    <a class="linktv" href="ops.robot-resolve.html">painel TV →</a>
+    <div class="upd" id="upd">carregando...</div>
+  </div>
+</div>
+<div class="tabs">
+  <button class="tab on" data-p="bdr">Individual</button>
+  <button class="tab" data-p="time">Time</button>
+  <button class="tab" data-p="gestao">Gestão</button>
+  <button class="tab" data-p="custos">Custos</button>
+  <button class="tab" data-p="ask">Perguntar à IA</button>
+</div>
+<div class="wrap">
+  <div class="alerta" id="alerta"></div>
+
+  <div class="pane on" id="pane-bdr">
+    <select class="sel" id="sel-bdr"></select>
+    <div id="bdr-corpo"><div class="vazio">Os insights individuais aparecem aqui depois da primeira rodada do Gestor IA (19h30) ou de uma execução manual no servidor.</div></div>
+  </div>
+
+  <div class="pane" id="pane-time"><div id="time-corpo"><div class="vazio">Sem análise do time ainda.</div></div></div>
+  <div class="pane" id="pane-gestao"><div id="gestao-corpo"><div class="vazio">Sem recomendações de gestão ainda.</div></div></div>
+
+  <div class="pane" id="pane-custos"><div id="custos-corpo"><div class="vazio">Sem dados de consumo ainda. O consolidador roda a cada 6 horas no servidor.</div></div></div>
+
+  <div class="pane" id="pane-ask">
+    <div class="card">
+      <h3>Pergunte qualquer coisa sobre a operação</h3>
+      <div class="askbox">
+        <input id="ask-input" placeholder="Ex: qual o tempo médio de resposta do Rommel?" onkeydown="if(event.key==='Enter')perguntar()">
+        <button id="ask-btn" onclick="perguntar()">Perguntar</button>
+      </div>
+      <div class="sug">Sugestões:
+        <span onclick="preencher('Quem demora mais para responder os leads?')">quem demora mais pra responder?</span> ·
+        <span onclick="preencher('Algum BDR está trabalhando fora do horário comercial?')">quem trabalha de madrugada?</span> ·
+        <span onclick="preencher('Qual chip está com maior risco de banimento e por quê?')">qual chip corre risco de ban?</span> ·
+        <span onclick="preencher('Compare a taxa de resposta dos leads entre os BDRs')">compare taxa de resposta</span>
+      </div>
+    </div>
+    <div class="resposta" id="ask-resp"></div>
+  </div>
+</div>
+
+<script>
+/* ============ CONFIGURACAO ============ */
+const SHEET_ID = '1jC8b5q_EawaYNEBd5JROg_s1prIzTUiHRIk23Zqkwso';       // Resolve_Operacao
+const APPS_SCRIPT_URL = 'COLE_AQUI_A_URL_DO_APP_DA_WEB';               // a mesma /exec do webhook
+/* ====================================== */
+const norm=s=>(s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();
+function parseCSV(t){const rows=[];let row=[],cur='',q=false;for(let i=0;i<t.length;i++){const ch=t[i];
+if(q){if(ch==='"'){if(t[i+1]==='"'){cur+='"';i++}else q=false}else cur+=ch}
+else{if(ch==='"')q=true;else if(ch===','){row.push(cur);cur=''}else if(ch==='\n'){row.push(cur);rows.push(row);row=[];cur=''}
+else if(ch!=='\r')cur+=ch}}if(cur!==''||row.length){row.push(cur);rows.push(row)}return rows}
+async function fetchAba(n){const r=await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(n)}&t=${Date.now()}`,{cache:'no-store'});
+const t=await r.text();if(!r.ok||t.trim().startsWith('<'))throw new Error(n);return parseCSV(t)}
+function toObj(rows){if(!rows.length)return[];let h=rows[0].map(norm),s=1;
+if(h.every(x=>!x)&&rows.length>1){h=rows[1].map(norm);s=2}
+return rows.slice(s).map(r=>{const o={};h.forEach((k,i)=>o[k]=r[i]??'');return o}).filter(o=>Object.values(o).some(v=>v!==''))}
+const col=(o,f)=>{const k=Object.keys(o).find(k=>k.includes(norm(f)));return k?o[k]:''};
+
+let INS={bdrs:[],time:null,gestao:null,dados:{}};
+
+function esc(s){const d=document.createElement('div');d.textContent=s||'';return d.innerHTML}
+function acoesHtml(s){const its=(s||'').split(' | ').filter(x=>x.trim());
+return its.map((a,i)=>`<div class="acao"><span class="n">${i+1}.</span><span>${esc(a)}</span></div>`).join('')}
+
+function renderBdr(nome){
+  const b=INS.bdrs.find(x=>norm(col(x,'BDR'))===norm(nome));const el=document.getElementById('bdr-corpo');
+  if(!b){el.innerHTML='<div class="vazio">Sem análise para esse BDR ainda.</div>';return}
+  let met='';
+  try{const m=JSON.parse(INS.dados[norm(nome)]||'{}');
+    met=`<div class="met">
+      <div><b>${m.conversas_7d??'-'}</b>conversas 7d</div>
+      <div><b>${m.pct_leads_que_respondem??'-'}%</b>leads respondem</div>
+      <div><b>${m.tempo_resposta_mediano_min??'-'}</b>min p/ responder</div>
+      <div><b>${m.pct_atividade_fora_8h20h??'-'}%</b>fora do horário</div>
+      <div><b>${m.leads_respondendo_abandonados_48h??'-'}</b>abandonados 48h</div>
+      <div><b>${m.leads_continuados_apos_troca_de_chip??'-'}</b>seguiu após trocar chip</div>
+    </div>`;}catch(e){}
+  el.innerHTML=met+
+    `<div class="grid2">
+      <div class="card"><h3>🚪 Abertura</h3><p>${esc(col(b,'ABERTURA'))}</p></div>
+      <div class="card"><h3>💬 Desenvolvimento</h3><p>${esc(col(b,'DESENVOLVIMENTO'))}</p></div>
+      <div class="card"><h3>🎯 Qualificação (TCM)</h3><p>${esc(col(b,'QUALIFICACAO'))}</p></div>
+      <div class="card"><h3>💪 Forças</h3><p>${esc(col(b,'FORCAS'))}</p></div>
+    </div>
+    <div class="card"><h3>📱 Saúde do WhatsApp</h3><p>${esc(col(b,'SAUDEWHATSAPP')||col(b,'SAUDE'))}</p></div>
+    <div class="card"><h3>✅ Plano de ação</h3>${acoesHtml(col(b,'ACOES'))}</div>`;
+}
+
+function renderTime(){
+  const t=INS.time;const el=document.getElementById('time-corpo');
+  if(!t)return;
+  el.innerHTML=`<div class="card"><h3>📖 Leitura do time</h3><p>${esc(col(t,'LEITURA'))}</p></div>
+    <div class="card"><h3>🎓 Treinamentos sugeridos</h3>${acoesHtml(col(t,'TREINAMENTOS'))}</div>
+    <div class="card"><h3>🔁 Rituais de gestão</h3>${acoesHtml(col(t,'RITUAIS'))}</div>`;
+}
+function renderGestao(){
+  const g=INS.gestao;const el=document.getElementById('gestao-corpo');
+  if(!g)return;
+  el.innerHTML=`<div class="card"><h3>🧭 Decisões recomendadas</h3>${acoesHtml(col(g,'DECISOES'))}</div>
+    <div class="card"><h3>⚠️ Riscos a monitorar</h3>${acoesHtml(col(g,'RISCOS'))}</div>`;
+}
+
+function renderCustos(orc,cus){
+  const el=document.getElementById('custos-corpo');
+  if(!orc)return;
+  const saldo=parseFloat((col(orc,'SALDOUSD')||'0').replace(',','.'))||0;
+  const gasto=parseFloat((col(orc,'GASTOUSD')||'0').replace(',','.'))||0;
+  const media=parseFloat((col(orc,'MEDIADIA')||'0').replace(',','.'))||0;
+  const dias=parseFloat((col(orc,'DIASRESTANTES')||'0').replace(',','.'))||0;
+  const alerta=col(orc,'ALERTA');
+  const corDias=dias<=5?'var(--red)':dias<=10?'var(--amber)':'var(--green)';
+  if(alerta){const a=document.getElementById('alerta');a.style.display='block';a.textContent='⚠ '+alerta;}
+  const porOrigem={};
+  cus.forEach(r=>{const o=col(r,'ORIGEM');const c=parseFloat((col(r,'CUSTOUSD')||'0').replace(',','.'))||0;
+    porOrigem[o]=(porOrigem[o]||0)+c;});
+  const maxO=Math.max(...Object.values(porOrigem),0.0001);
+  const barras=Object.entries(porOrigem).sort((a,b)=>b[1]-a[1]).map(([o,c])=>
+    `<div class="acao"><span style="min-width:110px;font-weight:700">${esc(o)}</span>
+     <span style="flex:1;background:var(--surface2);border-radius:5px;height:14px;position:relative;overflow:hidden">
+       <span style="position:absolute;left:0;top:0;bottom:0;width:${Math.round(100*c/maxO)}%;background:linear-gradient(90deg,var(--blue),var(--cyan))"></span>
+     </span><span class="n" style="min-width:90px;text-align:right">US$ ${c.toFixed(3)}</span></div>`).join('');
+  const linhas=cus.slice(0,20).map(r=>`<div class="acao">
+    <span style="min-width:86px" class="n">${esc(col(r,'DATA'))}</span>
+    <span style="flex:1">${esc(col(r,'ORIGEM'))} · ${esc(col(r,'CHAMADAS'))} chamada(s)</span>
+    <span class="n">US$ ${(parseFloat((col(r,'CUSTOUSD')||'0').replace(',','.'))||0).toFixed(3)}</span></div>`).join('');
+  el.innerHTML=`<div class="met">
+      <div><b style="color:${corDias}">${dias} dias</b>de crédito restantes</div>
+      <div><b>US$ ${saldo.toFixed(2)}</b>saldo estimado</div>
+      <div><b>US$ ${gasto.toFixed(2)}</b>gasto acumulado</div>
+      <div><b>US$ ${media.toFixed(2)}/dia</b>média (7 dias)</div>
+    </div>
+    <div class="card"><h3>💸 Gasto por robô</h3>${barras||'<p class="vazio">sem consumo ainda</p>'}</div>
+    <div class="card"><h3>📅 Últimos dias</h3>${linhas||'<p class="vazio">sem registros</p>'}</div>
+    <div class="card"><h3>ℹ️ Como ler</h3><p>Valores estimados a partir dos tokens reais cobrados pela API em cada chamada. "avaliacao" = notas diárias de qualidade (Haiku), "gestor" = análise das 19h30 (Sonnet), "perguntas" = barra de perguntas. Sem recarga automática, o gasto máximo possível é o saldo: crédito zerado apenas pausa os robôs, nunca gera fatura.</p></div>`;
+}
+
+async function carregar(){
+  try{
+    const [b,t,g,d,orc,cus]=await Promise.all(['InsightsBDR','InsightsTime','InsightsGestao','DadosIA','Orcamento','Custos'].map(a=>fetchAba(a).then(toObj).catch(()=>[])));
+    INS.bdrs=b;INS.time=t[0]||null;INS.gestao=g[0]||null;
+    INS.dados={};d.forEach(r=>INS.dados[norm(col(r,'BDR'))]=col(r,'METRICAS'));
+    renderCustos(orc[0]||null,cus);
+    const sel=document.getElementById('sel-bdr');
+    if(b.length){
+      sel.innerHTML=b.map(x=>`<option>${esc(col(x,'BDR'))}</option>`).join('');
+      renderBdr(sel.value);renderTime();renderGestao();
+      document.getElementById('upd').textContent='análise de '+(col(b[0],'ATUALIZADO')||'');
+    } else document.getElementById('upd').textContent='aguardando primeira análise';
+  }catch(e){const a=document.getElementById('alerta');a.style.display='block';
+    a.textContent='⚠ Não consegui ler a planilha. Confira o compartilhamento por link.';}
+}
+
+document.getElementById('sel-bdr').addEventListener('change',e=>renderBdr(e.target.value));
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));t.classList.add('on');
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.getElementById('pane-'+t.dataset.p).classList.add('on');}));
+
+function preencher(q){document.getElementById('ask-input').value=q;perguntar();}
+async function perguntar(){
+  const q=document.getElementById('ask-input').value.trim();if(!q)return;
+  let senha=localStorage.getItem('gestor_senha');
+  if(!senha){senha=prompt('Senha do gestor (a mesma do webhook):');if(!senha)return;
+    localStorage.setItem('gestor_senha',senha);}
+  const btn=document.getElementById('ask-btn'),resp=document.getElementById('ask-resp');
+  btn.innerHTML='<span class="spin"></span>';btn.disabled=true;
+  resp.style.display='block';resp.textContent='Analisando os dados...';
+  try{
+    const r=await fetch(APPS_SCRIPT_URL,{method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({secret:senha,tipo:'ask',pergunta:q})});
+    const txt=await r.text();
+    if(txt.trim()==='negado'){localStorage.removeItem('gestor_senha');
+      resp.textContent='Senha incorreta. Tenta de novo.';}
+    else{const j=JSON.parse(txt);resp.textContent=j.resposta||txt;}
+  }catch(e){resp.textContent='Erro ao consultar: '+e.message;}
+  btn.textContent='Perguntar';btn.disabled=false;
+}
+
+carregar();
+setInterval(carregar,120000);
+</script>
+</body>
+</html>
