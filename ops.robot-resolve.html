@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>RESOLVE OPS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07070c; --surface:#101018; --surface2:#171724; --border:#23233a;
+  --text:#eef0f6; --dim:#7d7f96;
+  --blue:#1A4FE8; --blue2:#3b82f6; --cyan:#06b6d4;
+  --green:#22c55e; --red:#ef4444; --amber:#f59e0b; --gold:#fbbf24; --purple:#a855f7;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow:hidden}
+.mono{font-family:'JetBrains Mono',monospace}
+
+.header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#0d0d16,#07070c)}
+.h-left{display:flex;align-items:center;gap:12px}
+.logo{font-size:24px;font-weight:900;letter-spacing:-1px;background:linear-gradient(120deg,#5b8cff,var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo span{-webkit-text-fill-color:var(--text);font-weight:300;letter-spacing:4px;font-size:15px;margin-left:8px}
+.badge{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:12px;color:var(--dim)}
+.badge b{color:var(--blue2)}
+.h-right{display:flex;align-items:center;gap:10px}
+.pulse{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px rgba(34,197,94,.6);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.alertbar{display:none;background:rgba(239,68,68,.12);border-bottom:1px solid rgba(239,68,68,.4);color:#fca5a5;font-size:12px;font-weight:600;padding:6px 24px;text-align:center}
+
+.main{display:grid;grid-template-columns:1fr 430px;gap:14px;padding:14px 16px;height:calc(100vh - 56px)}
+.col{display:flex;flex-direction:column;gap:14px;min-height:0}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;min-height:0}
+.card-title{font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+.card-title .sub{color:var(--dim);font-weight:400;letter-spacing:1px;text-transform:none;font-size:11px}
+
+/* grade de BDRs */
+.bdr-wrap{flex:1;overflow:hidden;margin-top:10px}
+.bdr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bdr-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:10px 12px;position:relative}
+.bdr-card.off{border-color:rgba(239,68,68,.55);box-shadow:0 0 14px rgba(239,68,68,.08)}
+.bdr-card.hot{border-color:rgba(34,197,94,.45)}
+.b-top{display:flex;justify-content:space-between;align-items:baseline}
+.b-name{font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:60%}
+.b-last{font-size:10px;color:var(--dim)}
+.b-last.warn{color:var(--red);font-weight:700}
+.b-total{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:26px;line-height:1.1;color:var(--blue2)}
+.b-total small{font-size:10px;color:var(--dim);font-weight:400;margin-left:4px}
+.b-codes{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.chip{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:5px;background:#0c0c14;border:1px solid var(--border);color:var(--dim)}
+.chip b{color:var(--text)}
+.b-split{margin-top:8px}
+.split-bar{display:flex;height:9px;border-radius:5px;overflow:hidden;background:#0c0c14}
+.split-res{background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.split-cli{background:var(--purple)}
+.split-leg{display:flex;justify-content:space-between;font-size:9px;color:var(--dim);margin-top:3px;font-family:'JetBrains Mono',monospace}
+.b-cards{display:flex;gap:10px;margin-top:7px;font-size:10px;color:var(--dim)}
+.b-cards b{font-family:'JetBrains Mono',monospace;color:var(--text)}
+.b-cards .est{color:var(--red)}
+
+/* estacionados */
+.tbl{width:100%;border-collapse:collapse;margin-top:8px}
+.tbl th{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--dim);text-align:left;padding:4px 6px;border-bottom:1px solid var(--border)}
+.tbl td{font-size:11px;padding:5px 6px;border-bottom:1px solid rgba(255,255,255,.04);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px}
+.tbl td.mono{font-family:'JetBrains Mono',monospace}
+.exc{font-weight:800;color:var(--red)}
+
+/* hora a hora */
+.hours{flex:1;min-height:110px;position:relative;margin-top:8px}
+canvas{width:100%!important;height:100%!important}
+
+/* fase 3 */
+.f3-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--dim);text-align:center;font-size:12px}
+.f3-empty .ico{font-size:30px;opacity:.6}
+.q-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);font-size:11px}
+.q-name{font-weight:700;flex:1}
+.q-pill{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 7px;border-radius:5px;background:#0c0c14;border:1px solid var(--border)}
+.q-alert{color:var(--amber);font-size:10px;max-width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="h-left"><div class="logo">RESOLVE<span>OPS</span></div></div>
+  <div class="h-right">
+    <div class="badge">Hoje <b id="dia-label">-</b></div>
+    <div class="badge">Atividades hoje <b id="tot-label">0</b></div>
+    <div class="badge">Atualizado <b id="upd-label">-</b></div>
+    <div class="pulse"></div>
+  </div>
+</div>
+<div class="alertbar" id="alerta"></div>
+
+<div class="main">
+  <!-- COLUNA ESQUERDA: BDRs -->
+  <div class="col">
+    <div class="card" style="flex:1">
+      <div class="card-title">Time em campo · hoje <span class="sub">azul = Resolve · roxo = contas de cliente · vermelho = sem atividade há muito tempo</span></div>
+      <div class="bdr-wrap"><div class="bdr-grid" id="bdr-grid"></div></div>
+    </div>
+    <div class="card" style="height:190px">
+      <div class="card-title">Ritmo do time · atividades por hora <span class="sub" id="ritmo-sub"></span></div>
+      <div class="hours"><canvas id="chart-horas"></canvas></div>
+    </div>
+  </div>
+
+  <!-- COLUNA DIREITA -->
+  <div class="col">
+    <div class="card" style="flex:1.15">
+      <div class="card-title">Estacionados · cobrança <span class="sub" id="est-sub"></span></div>
+      <div style="flex:1;overflow:hidden">
+        <table class="tbl"><thead><tr><th>BDR</th><th>Lead</th><th>Cliente</th><th>Etapa</th><th>Dias</th><th>+SLA</th></tr></thead>
+        <tbody id="est-body"></tbody></table>
+      </div>
+    </div>
+    <div class="card" style="flex:1">
+      <div class="card-title">Qualidade de conversa · IA <span class="sub">script · cadência 28 toques</span></div>
+      <div id="f3-body" class="f3-empty">
+        <div class="ico">🤖</div>
+        <div>Aguardando a Fase 3 entrar no ar.<br>Quando o leitor de WhatsApp e a análise por IA<br>começarem a rodar, esta área acende sozinha.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* =========================================================
+   CONFIGURACAO
+   ========================================================= */
+const SHEET_ID = '1jC8b5q_EawaYNEBd5JROg_s1prIzTUiHRIk23Zqkwso'; // Resolve_Operacao
+const FUNIS_RESOLVE = ['RESOLVE'];      // funil cujo nome contem isso = conta Resolve
+const EXCLUIR = [];                      // nomes a esconder do painel, ex: ['GABI','GUILHERME']
+const SEM_ATIVIDADE_ALERTA_MIN = 120;    // minutos sem atividade p/ card ficar vermelho
+const HORA_INICIO = 8, HORA_FIM = 19;    // janela de expediente do grafico
+const ATUALIZAR_SEG = 60;
+
+/* ========================================================= */
+const norm = s => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();
+let chartHoras=null;
+
+function parseCSV(text){
+  const rows=[];let row=[],cur='',inQ=false;
+  for(let i=0;i<text.length;i++){const ch=text[i];
+    if(inQ){if(ch==='"'){if(text[i+1]==='"'){cur+='"';i++;}else inQ=false;}else cur+=ch;}
+    else{if(ch==='"')inQ=true;else if(ch===','){row.push(cur);cur='';}
+    else if(ch==='\n'){row.push(cur);rows.push(row);row=[];cur='';}else if(ch!=='\r')cur+=ch;}}
+  if(cur!==''||row.length){row.push(cur);rows.push(row);}
+  return rows;
+}
+async function fetchAba(nome){
+  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&headers=1&sheet=${encodeURIComponent(nome)}&t=${Date.now()}`;
+  const r=await fetch(url,{cache:'no-store'});
+  if(!r.ok)throw new Error(nome);
+  const t=await r.text();
+  if(t.trim().startsWith('<'))throw new Error(nome);
+  return parseCSV(t);
+}
+function toObjects(rows){
+  if(!rows.length)return[];
+  let head=rows[0].map(norm),start=1;
+  if(head.every(h=>!h)&&rows.length>1){head=rows[1].map(norm);start=2;}
+  return rows.slice(start).map(r=>{const o={};head.forEach((h,i)=>o[h]=r[i]??'');return o;})
+    .filter(o=>Object.values(o).some(v=>v!==''));
+}
+const col=(o,f)=>{const k=Object.keys(o).find(k=>k.includes(norm(f)));return k?o[k]:'';};
+const num=v=>{const n=parseFloat((v||'').toString().replace(',','.'));return isNaN(n)?0:n;};
+const isResolve=funil=>FUNIS_RESOLVE.some(f=>norm(funil).includes(f));
+const hoje=()=>{const d=new Date();return String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')+'/'+d.getFullYear();};
+
+function parseDH(s){ // dd/MM/yyyy HH:mm
+  const m=(s||'').match(/(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2}):(\d{2})/);
+  if(!m)return null;
+  return new Date(+m[3],+m[2]-1,+m[1],+m[4],+m[5]);
+}
+
+async function carregar(){
+  const [atvR,funR,estR]=await Promise.all([fetchAba('Atividade'),fetchAba('Funil'),fetchAba('Estacionados')]);
+  let qualR=null; try{qualR=await fetchAba('Qualidade');}catch(e){}
+  const atv=toObjects(atvR).map(o=>({dh:col(o,'DATAHORA'),data:col(o,'DATA')&&col(o,'DATA').length===10?col(o,'DATA'):(col(o,'DATAHORA')||'').slice(0,10),hora:col(o,'HORA'),bdr:col(o,'BDR').trim(),cod:col(o,'CODIGO'),funil:col(o,'FUNIL')}));
+  const fun=toObjects(funR).map(o=>({funil:col(o,'FUNIL'),etapa:col(o,'ETAPA'),lead:col(o,'LEAD'),resp:col(o,'RESPONSAVEL').trim(),dias:num(col(o,'DIAS'))}));
+  const est=toObjects(estR).map(o=>({funil:col(o,'FUNIL'),etapa:col(o,'ETAPA'),lead:col(o,'LEAD'),resp:col(o,'RESPONSAVEL').trim(),dias:num(col(o,'DIAS NA')),sla:num(col(o,'SLA')),exc:num(col(o,'EXCEDIDO'))}));
+  const qual=qualR?toObjects(qualR):null;
+  render(atv,fun,est,qual);
+}
+
+function render(atv,fun,est,qual){
+  const agora=new Date(),H=hoje();
+  const atvHoje=atv.filter(a=>a.data===H&&!EXCLUIR.includes(norm(a.bdr)));
+
+  document.getElementById('dia-label').textContent=H;
+  document.getElementById('tot-label').textContent=atvHoje.length;
+  document.getElementById('upd-label').textContent=agora.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+
+  /* ---- consolida por BDR ---- */
+  const bdrs={};
+  const garante=n=>{const k=norm(n);if(!k||EXCLUIR.includes(k))return null;
+    if(!bdrs[k])bdrs[k]={nome:n,total:0,cods:{},res:0,cli:0,ult:null,cards:0,cardsRes:0,cardsCli:0,estac:0};
+    return bdrs[k];};
+  atvHoje.forEach(a=>{const b=garante(a.bdr);if(!b)return;
+    b.total++;b.cods[a.cod]=(b.cods[a.cod]||0)+1;
+    if(isResolve(a.funil))b.res++;else b.cli++;
+    const d=parseDH(a.dh);if(d&&(!b.ult||d>b.ult))b.ult=d;});
+  fun.forEach(f=>{const b=garante(f.resp);if(!b)return;
+    b.cards++;if(isResolve(f.funil))b.cardsRes++;else b.cardsCli++;});
+  est.forEach(e=>{const b=garante(e.resp);if(b)b.estac++;});
+
+  const lista=Object.values(bdrs).sort((a,b)=>b.total-a.total);
+  const grid=document.getElementById('bdr-grid');
+  grid.innerHTML=lista.map(b=>{
+    const minSem=b.ult?Math.round((agora-b.ult)/60000):null;
+    const dentroExp=agora.getHours()>=HORA_INICIO&&agora.getHours()<HORA_FIM;
+    const off=dentroExp&&(minSem==null||minSem>SEM_ATIVIDADE_ALERTA_MIN);
+    const hot=b.total>0&&minSem!=null&&minSem<=30;
+    const pRes=b.total>0?Math.round(b.res/b.total*100):0;
+    const chips=Object.keys(b.cods).sort().map(c=>`<span class="chip">${c} <b>${b.cods[c]}</b></span>`).join('');
+    const ultTxt=minSem==null?'sem atividade hoje':minSem<60?`há ${minSem} min`:`há ${Math.floor(minSem/60)}h${String(minSem%60).padStart(2,'0')}`;
+    return `<div class="bdr-card ${off?'off':hot?'hot':''}">
+      <div class="b-top"><div class="b-name">${b.nome}</div><div class="b-last ${off?'warn':''}">${ultTxt}</div></div>
+      <div class="b-total">${b.total}<small>toques hoje</small></div>
+      <div class="b-codes">${chips||'<span class="chip">nenhum registro</span>'}</div>
+      <div class="b-split">
+        <div class="split-bar"><div class="split-res" style="width:${pRes}%"></div><div class="split-cli" style="width:${100-pRes}%"></div></div>
+        <div class="split-leg"><span>Resolve ${b.res} (${pRes}%)</span><span>Clientes ${b.cli} (${100-pRes}%)</span></div>
+      </div>
+      <div class="b-cards"><span>Cards <b>${b.cards}</b></span><span>Resolve <b>${b.cardsRes}</b></span><span>Clientes <b>${b.cardsCli}</b></span><span class="est">Estacionados <b>${b.estac}</b></span></div>
+    </div>`;
+  }).join('')||'<div style="color:var(--dim);font-size:13px;padding:20px">Sem atividade registrada hoje ainda. Assim que os BDRs lançarem os códigos nas notas, os cards aparecem aqui.</div>';
+
+  /* ---- estacionados ---- */
+  const estOrd=[...est].filter(e=>!EXCLUIR.includes(norm(e.resp))).sort((a,b)=>b.exc-a.exc).slice(0,16);
+  document.getElementById('est-sub').textContent=est.length+' cards acima do SLA';
+  document.getElementById('est-body').innerHTML=estOrd.map(e=>`<tr>
+    <td>${e.resp||'-'}</td><td title="${e.lead}">${e.lead}</td><td>${e.funil}</td><td>${e.etapa}</td>
+    <td class="mono">${e.dias}</td><td class="mono exc">+${e.exc}</td></tr>`).join('')
+    ||'<tr><td colspan="6" style="color:var(--dim)">Nenhum card estourado. Funil saudável.</td></tr>';
+
+  /* ---- ritmo por hora ---- */
+  const horas=[];for(let h=HORA_INICIO;h<=HORA_FIM;h++)horas.push(h);
+  const porHora=horas.map(h=>atvHoje.filter(a=>parseInt(a.hora)===h).length);
+  document.getElementById('ritmo-sub').textContent='janela '+HORA_INICIO+'h às '+HORA_FIM+'h';
+  if(chartHoras)chartHoras.destroy();
+  Chart.defaults.color='#7d7f96';Chart.defaults.font.family="'Outfit',sans-serif";
+  chartHoras=new Chart(document.getElementById('chart-horas'),{type:'bar',
+    data:{labels:horas.map(h=>h+'h'),datasets:[{data:porHora,backgroundColor:horas.map(h=>h===agora.getHours()?'rgba(6,182,212,.9)':'rgba(59,130,246,.65)'),borderRadius:5,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,.05)'},ticks:{precision:0,font:{family:"'JetBrains Mono',monospace",size:10}}},
+              x:{grid:{display:false},ticks:{font:{family:"'JetBrains Mono',monospace",size:10}}}}}});
+
+  /* ---- fase 3: qualidade ---- */
+  if(qual&&qual.length){
+    const corP=p=>p>=80?'var(--green)':p>=60?'var(--amber)':'var(--red)';
+    document.getElementById('f3-body').className='';
+    document.getElementById('f3-body').style.cssText='flex:1;overflow:hidden;margin-top:8px';
+    document.getElementById('f3-body').innerHTML=qual.map(q=>{
+      const nome=col(q,'BDR'),sc=num(col(q,'SCRIPT')),cad=num(col(q,'CADENCIA')),al=col(q,'ALERTA');
+      if(EXCLUIR.includes(norm(nome)))return'';
+      return `<div class="q-row"><div class="q-name">${nome}</div>
+        <span class="q-pill" style="color:${corP(sc)}">script ${sc}%</span>
+        <span class="q-pill" style="color:${corP(cad)}">cadência ${cad}%</span>
+        <span class="q-alert" title="${al}">${al||''}</span></div>`;
+    }).join('');
+  }
+}
+
+function erro(msg){const el=document.getElementById('alerta');el.style.display='block';
+  el.textContent='⚠ Não consegui ler a planilha Resolve_Operacao. Confira se está compartilhada como "qualquer pessoa com o link pode visualizar". ('+msg+')';}
+
+async function boot(){try{await carregar();document.getElementById('alerta').style.display='none';}catch(e){console.error(e);erro(e.message);}}
+boot();
+setInterval(boot,ATUALIZAR_SEG*1000);
+</script>
+</body>
+</html>
