@@ -132,13 +132,23 @@ canvas{width:100%!important;height:100%!important}
    ========================================================= */
 const SHEET_ID = '1jC8b5q_EawaYNEBd5JROg_s1prIzTUiHRIk23Zqkwso'; // Resolve_Operacao
 const FUNIS_RESOLVE = ['RESOLVE'];      // funil cujo nome contem isso = conta Resolve
-const EXCLUIR = [];                      // nomes a esconder do painel, ex: ['GABI','GUILHERME']
+const EXCLUIR = ['VINICIUS ALMEIDA'];     // nomes a esconder do painel, ex: ['GABI','GUILHERME']
+const MESCLAR = {};                       // junta um nome/card em outro, ex: {'?':'ANNA KARLA'}
+const TRADUZ = {                          // IDs do WeSales -> nome (corrige linhas historicas)
+  'PkZx7mfeOq9TNuuPfve7':'Adelson Gomes','5tr6CwdGxz9KNzxoWLSk':'Adson Kleydir',
+  'HkTW77nIq0f2p7UmNBWb':'Anna Karla','Y7vHsqdOvczeNDvbFnju':'Artur Ricardo',
+  'y1AKUQ5aG3SUob18XgTL':'Gabriela Oliveira','JtZY7WTgXLHpjB3KbRhB':'Guilherme A',
+  '15FiaL5lxPsEsoO7cwUD':'Maria Eduarda','gnCHLwQMYuE8ZrAGxIfi':'Mariane Arruda',
+  'Y91Y2JNwgrTXFithfIJB':'Olivier Dantas','UgauFGjg8EIN5wDRarsG':'Petros Lira',
+  'oZwvDklCM4mA9NxectAM':'Resolve Company','U24eflAmfhhwXi5iXpRQ':'Rommel Bello',
+  'bfZYo5gocoX7spw7cp7h':'Vinícius Almeida','OAietvaZoJMxf7jiBLDh':'Vinícius Lima'};
+const TRADUZ_UP = {}; Object.keys(TRADUZ).forEach(k=>TRADUZ_UP[k.toUpperCase()]=TRADUZ[k].normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase());
 const SEM_ATIVIDADE_ALERTA_MIN = 120;    // minutos sem atividade p/ card ficar vermelho
 const HORA_INICIO = 8, HORA_FIM = 19;    // janela de expediente do grafico
 const ATUALIZAR_SEG = 60;
 
 /* ========================================================= */
-const norm = s => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();
+const norm = s => {let n=(s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase();if(TRADUZ_UP[n])n=TRADUZ_UP[n];return MESCLAR[n]?MESCLAR[n].toUpperCase():n;};
 let chartHoras=null;
 
 function parseCSV(text){
@@ -197,7 +207,8 @@ function render(atv,fun,est,qual){
   /* ---- consolida por BDR ---- */
   const bdrs={};
   const garante=n=>{const k=norm(n);if(!k||EXCLUIR.includes(k))return null;
-    if(!bdrs[k])bdrs[k]={nome:n,total:0,cods:{},res:0,cli:0,ult:null,cards:0,cardsRes:0,cardsCli:0,estac:0};
+    const bruto=(n||'').toString().trim();
+    if(!bdrs[k])bdrs[k]={nome:TRADUZ[bruto]||MESCLAR[bruto]||n,total:0,cods:{},res:0,cli:0,ult:null,cards:0,cardsRes:0,cardsCli:0,estac:0};
     return bdrs[k];};
   atvHoje.forEach(a=>{const b=garante(a.bdr);if(!b)return;
     b.total++;b.cods[a.cod]=(b.cods[a.cod]||0)+1;
