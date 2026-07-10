@@ -50,6 +50,8 @@ padding:18px;font-size:14px;line-height:1.7;white-space:pre-wrap;display:none}
 .alerta{display:none;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.4);color:#fca5a5;
 font-size:13px;font-weight:600;padding:10px 16px;border-radius:10px;margin-top:14px}
 .linktv{font-size:12px;color:var(--cyan);text-decoration:none}
+.btnago{padding:8px 14px;border-radius:10px;border:none;background:linear-gradient(120deg,var(--blue),#3b6df0);color:#fff;font-weight:800;font-family:'Outfit',sans-serif;font-size:12px;cursor:pointer}
+.btnago:disabled{opacity:.6;cursor:default}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
 border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -59,6 +61,7 @@ border-radius:50%;animation:sp 1s linear infinite;vertical-align:-2px}
 <div class="header">
   <div class="logo">RESOLVE<span>GESTOR</span></div>
   <div style="display:flex;gap:14px;align-items:center">
+    <button class="btnago" id="btn-agora" onclick="pedirAnalise()">🔄 Analisar agora</button>
     <a class="linktv" href="ops.robot-resolve.html">painel TV →</a>
     <div class="upd" id="upd">carregando...</div>
   </div>
@@ -219,6 +222,22 @@ document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
   document.getElementById('pane-'+t.dataset.p).classList.add('on');}));
 
 function preencher(q){document.getElementById('ask-input').value=q;perguntar();}
+async function pedirAnalise(){
+  let senha=localStorage.getItem('gestor_senha');
+  if(!senha){senha=prompt('Senha do gestor (a mesma do webhook):');if(!senha)return;
+    localStorage.setItem('gestor_senha',senha);}
+  const b=document.getElementById('btn-agora');
+  b.disabled=true;b.textContent='⏳ enviando pedido...';
+  try{
+    const r=await fetch(APPS_SCRIPT_URL,{method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({secret:senha,tipo:'pedir'})});
+    const t=await r.text();
+    if(t.trim()==='negado'){localStorage.removeItem('gestor_senha');b.textContent='senha incorreta';}
+    else b.textContent='✓ analisando · resultado em ~5 min';
+  }catch(e){b.textContent='erro ao pedir';}
+  setTimeout(()=>{b.disabled=false;b.textContent='🔄 Analisar agora';},90000);
+}
 async function perguntar(){
   const q=document.getElementById('ask-input').value.trim();if(!q)return;
   let senha=localStorage.getItem('gestor_senha');
