@@ -37,6 +37,12 @@ select.badge{color:var(--text);cursor:pointer;font-family:'Outfit',sans-serif}
 .card-title{font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:10px}
 .card-title .sub{color:var(--dim);font-weight:400;letter-spacing:1px}
 .chart-wrap{flex:1;position:relative;min-height:0;margin-top:10px}
+.day-strip{display:flex;gap:8px;margin-top:10px}
+.day-chip{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:6px 4px 5px;text-align:center;flex:1;min-width:0}
+.day-chip.lead{background:linear-gradient(180deg,rgba(251,191,36,.12),var(--surface2));border-color:rgba(251,191,36,.5)}
+.dc-name{font-size:10px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-num{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:22px;line-height:1.1}
+.dc-lab{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--dim)}
 canvas{width:100%!important;height:100%!important}
 
 /* ===== PODIUM ===== */
@@ -140,6 +146,7 @@ canvas{width:100%!important;height:100%!important}
   <div class="left">
     <div class="card">
       <div class="card-title">Agendamentos acumulados por BDR <span class="sub" id="chart-sub"></span></div>
+      <div class="day-strip" id="day-strip"></div>
       <div class="chart-wrap"><canvas id="chart-main"></canvas></div>
     </div>
     <div class="card">
@@ -282,10 +289,11 @@ async function loadDB(){
 function checkNames(){
   const el=document.getElementById('alerta');
   const bdrNames=new Set(DB.equipe.filter(e=>e.funcao==='BDR'&&e.ativo).map(e=>norm(e.nome)));
-  const clNames=new Set(DB.equipe.filter(e=>e.funcao==='CLOSER'&&e.ativo).map(e=>norm(e.nome)));
+  const allB=new Set(DB.equipe.filter(e=>e.funcao==='BDR').map(e=>norm(e.nome)));
+  const allC=new Set(DB.equipe.filter(e=>e.funcao==='CLOSER').map(e=>norm(e.nome)));
   const orfaos=new Set();
-  DB.lancB.forEach(l=>{if(!bdrNames.has(norm(l.bdr)))orfaos.add(l.bdr);});
-  DB.lancC.forEach(l=>{if(!clNames.has(norm(l.closer)))orfaos.add(l.closer);});
+  DB.lancB.forEach(l=>{const tem=l.ag||l.re||(l.qu||0)||l.ns||l.vendas;if(tem&&!allB.has(norm(l.bdr)))orfaos.add(l.bdr);});
+  DB.lancC.forEach(l=>{const tem=l.receita||l.rBdr||l.rProp||l.rInd||l.real||(l.qual||0)||l.prop||l.cont;if(tem&&!allC.has(norm(l.closer)))orfaos.add(l.closer);});
   const msgs=[];
   if(bdrNames.size===0)msgs.push('Nenhum BDR ativo na aba Equipe (coluna Funcao deve ser BDR e Ativo SIM)');
   if(orfaos.size)msgs.push('Lançamentos com nome fora da aba Equipe: '+[...orfaos].join(', '));
@@ -369,6 +377,17 @@ function renderChart(M){
     scales:{y:{min:0,grid:{color:grid},ticks:{font:{family:"'JetBrains Mono',monospace",size:11}}},
       x:{grid:{display:false},ticks:{font:{family:"'JetBrains Mono',monospace",size:10},maxRotation:50}}}
   }});
+}
+
+function renderDaily(M){
+  const el=document.getElementById('day-strip');
+  if(M.todayIdx<0){el.style.display='none';return;}
+  el.style.display='flex';
+  const rows=M.bdrData.map(b=>({b,hoje:b.daily[M.todayIdx]||0})).sort((a,c)=>c.hoje-a.hoje);
+  el.innerHTML=rows.map((r,i)=>`<div class="day-chip ${i===0&&r.hoje>0?'lead':''}" style="border-color:${r.b.cor}55">
+    <div class="dc-name" style="color:${r.b.cor}">${i===0&&r.hoje>0?'👑 ':''}${r.b.nome}</div>
+    <div class="dc-num">${r.hoje}</div>
+    <div class="dc-lab">agend. hoje</div></div>`).join('');
 }
 
 function renderPodium(M){
@@ -543,6 +562,7 @@ function renderAll(){
   document.getElementById('dia-label').textContent=(M.todayIdx>=0?M.todayIdx+1:0)+' de '+M.daysIn;
   document.getElementById('upd-label').textContent=new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
   renderChart(M);
+  renderDaily(M);
   renderPodium(M);
   buildScreens(M);
   startRotation();
